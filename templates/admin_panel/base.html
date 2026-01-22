@@ -1,0 +1,181 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Panel - Librovaai{% endblock %}</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 70px 0 0;
+            background-color: #2c3e50;
+            width: 250px;
+        }
+        .sidebar .nav-link {
+            color: #ecf0f1;
+            padding: 15px 20px;
+            display: block;
+            text-decoration: none;
+        }
+        .sidebar .nav-link:hover {
+            background-color: #34495e;
+        }
+        .sidebar .nav-link.active {
+            background-color: #3498db;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        .top-navbar {
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 250px;
+            z-index: 99;
+            height: 60px;
+            padding: 10px 20px;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .stat-card .stat-icon {
+            font-size: 40px;
+            float: right;
+            opacity: 0.3;
+        }
+        .table-custom {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div style="padding: 20px; text-align: center; color: white; background: #34495e;">
+            <h3>ADMIN PANEL</h3>
+        </div>
+        <ul class="nav flex-column">
+            <li>
+                <a class="nav-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}" 
+                   href="{% url 'admin_dashboard' %}">
+                    <i class="fa fa-dashboard"></i> Dashboard
+                </a>
+            </li>
+            <li>
+                <a class="nav-link {% if 'book' in request.resolver_match.url_name %}active{% endif %}" 
+                   href="{% url 'admin_books' %}">
+                    <i class="fa fa-book"></i> Kitap Yönetimi
+                </a>
+            </li>
+            <li>
+                <a class="nav-link {% if 'author' in request.resolver_match.url_name %}active{% endif %}" 
+                   href="{% url 'admin_authors' %}">
+                    <i class="fa fa-users"></i> Yazar Onayları
+                </a>
+            </li>
+            <li>
+                <a class="nav-link {% if 'user' in request.resolver_match.url_name %}active{% endif %}" 
+                   href="{% url 'admin_users' %}">
+                    <i class="fa fa-user"></i> Kullanıcılar
+                </a>
+            </li>
+            <li>
+                <a class="nav-link {% if 'category' in request.resolver_match.url_name %}active{% endif %}" 
+                   href="{% url 'admin_categories' %}">
+                    <i class="fa fa-tags"></i> Kategoriler
+                </a>
+            </li>
+            <li>
+                <a class="nav-link {% if 'premium' in request.resolver_match.url_name %}active{% endif %}" 
+                   href="{% url 'admin_premium' %}">
+                    <i class="fa fa-star"></i> Premium Üyelikler
+                </a>
+            </li>
+            <li>
+                <a class="nav-link {% if 'statistics' in request.resolver_match.url_name %}active{% endif %}" 
+                   href="{% url 'admin_statistics' %}">
+                    <i class="fa fa-bar-chart"></i> İstatistikler
+                </a>
+            </li>
+            <li>
+                <a class="nav-link {% if 'settings' in request.resolver_match.url_name %}active{% endif %}" 
+                   href="{% url 'admin_site_settings' %}">
+                    <i class="fa fa-cog"></i> Site Ayarları
+                </a>
+            </li>
+            <li>
+                <a class="nav-link" href="{% url 'home' %}">
+                    <i class="fa fa-home"></i> Ana Siteye Dön
+                </a>
+            </li>
+            <li>
+                <a class="nav-link" href="{% url 'logout' %}">
+                    <i class="fa fa-sign-out"></i> Çıkış
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Top Navbar -->
+    <nav class="top-navbar">
+        <div class="row">
+            <div class="col-md-6">
+                <h4 style="margin-top: 5px;">{% block page_title %}Dashboard{% endblock %}</h4>
+            </div>
+            <div class="col-md-6 text-right">
+                <span><i class="fa fa-user"></i> {{ user.username }}</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content" style="margin-top: 60px;">
+        
+        <!-- Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade in" role="alert">
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
