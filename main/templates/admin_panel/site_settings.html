@@ -1,0 +1,314 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Site Ayarları - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-cog"></i> Site Ayarları</h3>
+            </div>
+            <div class="panel-body">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- Temel Bilgiler -->
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Temel Bilgiler</h4>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="site_name">Site Adı *</label>
+                                <input type="text" class="form-control" id="site_name" name="site_name" 
+                                       value="{{ settings.site_name }}" required>
+                                <p class="help-block">Site başlığı ve logo yerine kullanılacak ad</p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="site_description">Site Açıklaması</label>
+                                <textarea class="form-control" id="site_description" name="site_description" 
+                                          rows="3">{{ settings.site_description }}</textarea>
+                                <p class="help-block">Siteniz hakkında kısa açıklama</p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="site_keywords">Site Anahtar Kelimeleri</label>
+                                <input type="text" class="form-control" id="site_keywords" name="site_keywords" 
+                                       value="{{ settings.site_keywords }}">
+                                <p class="help-block">SEO için anahtar kelimeler (virgülle ayırın)</p>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="logo">Logo</label>
+                                        {% if settings.logo %}
+                                            <div style="margin-bottom: 10px;">
+                                                <img src="{{ settings.logo.url }}" alt="Logo" style="max-height: 100px;">
+                                            </div>
+                                        {% endif %}
+                                        <input type="file" class="form-control" id="logo" name="logo" accept="image/*">
+                                        <p class="help-block">Site logosu (önerilen: 200x50 px)</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="favicon">Favicon</label>
+                                        {% if settings.favicon %}
+                                            <div style="margin-bottom: 10px;">
+                                                <img src="{{ settings.favicon.url }}" alt="Favicon" style="max-height: 32px;">
+                                            </div>
+                                        {% endif %}
+                                        <input type="file" class="form-control" id="favicon" name="favicon" accept="image/*">
+                                        <p class="help-block">Tarayıcı ikonu (önerilen: 32x32 px)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- İletişim Bilgileri -->
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">İletişim Bilgileri</h4>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="contact_email">İletişim E-posta *</label>
+                                <input type="email" class="form-control" id="contact_email" name="contact_email" 
+                                       value="{{ settings.contact_email }}" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="contact_phone">İletişim Telefon</label>
+                                <input type="text" class="form-control" id="contact_phone" name="contact_phone" 
+                                       value="{{ settings.contact_phone }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="contact_address">İletişim Adresi</label>
+                                <textarea class="form-control" id="contact_address" name="contact_address" 
+                                          rows="2">{{ settings.contact_address }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Sosyal Medya -->
+                    <div class="panel panel-success">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Sosyal Medya Bağlantıları</h4>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="facebook_url">Facebook</label>
+                                        <input type="url" class="form-control" id="facebook_url" name="facebook_url" 
+                                               value="{{ settings.facebook_url }}" placeholder="https://facebook.com/...">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="twitter_url">Twitter</label>
+                                        <input type="url" class="form-control" id="twitter_url" name="twitter_url" 
+                                               value="{{ settings.twitter_url }}" placeholder="https://twitter.com/...">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="instagram_url">Instagram</label>
+                                        <input type="url" class="form-control" id="instagram_url" name="instagram_url" 
+                                               value="{{ settings.instagram_url }}" placeholder="https://instagram.com/...">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="linkedin_url">LinkedIn</label>
+                                        <input type="url" class="form-control" id="linkedin_url" name="linkedin_url" 
+                                               value="{{ settings.linkedin_url }}" placeholder="https://linkedin.com/...">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="youtube_url">YouTube</label>
+                                        <input type="url" class="form-control" id="youtube_url" name="youtube_url" 
+                                               value="{{ settings.youtube_url }}" placeholder="https://youtube.com/...">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Footer -->
+                    <div class="panel panel-warning">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Footer Ayarları</h4>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="footer_text">Footer Metni</label>
+                                <textarea class="form-control" id="footer_text" name="footer_text" 
+                                          rows="2">{{ settings.footer_text }}</textarea>
+                                <p class="help-block">Sitenin altında görünecek telif hakkı metni</p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="footer_about">Footer Hakkında</label>
+                                <textarea class="form-control" id="footer_about" name="footer_about" 
+                                          rows="3">{{ settings.footer_about }}</textarea>
+                                <p class="help-block">Footer'da görünecek "Hakkımızda" metni</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- SEO -->
+                    <div class="panel panel-danger">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">SEO Ayarları</h4>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="meta_title">Meta Başlık</label>
+                                <input type="text" class="form-control" id="meta_title" name="meta_title" 
+                                       value="{{ settings.meta_title }}">
+                                <p class="help-block">Tarayıcı sekmesinde ve arama motorlarında görünecek başlık</p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="meta_description">Meta Açıklama</label>
+                                <textarea class="form-control" id="meta_description" name="meta_description" 
+                                          rows="2">{{ settings.meta_description }}</textarea>
+                                <p class="help-block">Arama motorlarında görünecek site açıklaması</p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="google_analytics_id">Google Analytics ID</label>
+                                <input type="text" class="form-control" id="google_analytics_id" name="google_analytics_id" 
+                                       value="{{ settings.google_analytics_id }}" placeholder="UA-XXXXXXXXX-X veya G-XXXXXXXXXX">
+                                <p class="help-block">Google Analytics izleme kodu</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Sistem Ayarları -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Sistem Ayarları</h4>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="maintenance_mode" 
+                                               {% if settings.maintenance_mode %}checked{% endif %}>
+                                        <strong>Bakım Modu</strong> - Site geçici olarak kapalı
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="maintenance_message">Bakım Modu Mesajı</label>
+                                <textarea class="form-control" id="maintenance_message" name="maintenance_message" 
+                                          rows="2">{{ settings.maintenance_message }}</textarea>
+                                <p class="help-block">Bakım modunda ziyaretçilere gösterilecek mesaj</p>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="default_language">Varsayılan Dil</label>
+                                        <select class="form-control" id="default_language" name="default_language">
+                                            <option value="tr" {% if settings.default_language == 'tr' %}selected{% endif %}>Türkçe</option>
+                                            <option value="en" {% if settings.default_language == 'en' %}selected{% endif %}>English</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="timezone">Zaman Dilimi</label>
+                                        <input type="text" class="form-control" id="timezone" name="timezone" 
+                                               value="{{ settings.timezone }}">
+                                        <p class="help-block">Örnek: Europe/Istanbul</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Özellikler -->
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Site Özellikleri</h4>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="allow_registration" 
+                                               {% if settings.allow_registration %}checked{% endif %}>
+                                        <strong>Kullanıcı Kaydına İzin Ver</strong>
+                                    </label>
+                                    <p class="help-block">Kapalıysa yeni kullanıcılar kayıt olamaz</p>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="allow_comments" 
+                                               {% if settings.allow_comments %}checked{% endif %}>
+                                        <strong>Yorumlara İzin Ver</strong>
+                                    </label>
+                                    <p class="help-block">Kitaplara ve makalelere yorum yapılabilir</p>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="enable_ai_processing" 
+                                               {% if settings.enable_ai_processing %}checked{% endif %}>
+                                        <strong>AI İşlemeyi Etkinleştir</strong>
+                                    </label>
+                                    <p class="help-block">Kitap yüklemelerinde AI ile özet ve içindekiler çıkarımı</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fa fa-save"></i> Ayarları Kaydet
+                        </button>
+                        <a href="{% url 'admin_dashboard' %}" class="btn btn-default btn-lg">
+                            <i class="fa fa-times"></i> İptal
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

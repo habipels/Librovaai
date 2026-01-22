@@ -1,0 +1,235 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+
+{% block title %}{{ book.title }} - Librovaai{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 30px; margin-bottom: 30px;">
+    
+    <div class="row">
+        <!-- Book Cover -->
+        <div class="col-md-4">
+            <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" class="img-responsive" 
+                 style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+            
+            <div style="margin-top: 20px;">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'book_read' book.slug %}" class="btn btn-primary btn-block btn-lg">
+                        <i class="fa fa-book-open"></i> Kitabı Oku
+                    </a>
+                    
+                    {% if not is_bookmarked %}
+                        <button class="btn btn-default btn-block" onclick="addBookmark()">
+                            <i class="fa fa-bookmark-o"></i> Yer İmi Ekle
+                        </button>
+                    {% else %}
+                        <button class="btn btn-success btn-block" disabled>
+                            <i class="fa fa-bookmark"></i> Yer İmi Eklendi
+                        </button>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary btn-block btn-lg">
+                        <i class="fa fa-sign-in"></i> Okumak için Giriş Yapın
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Book Info -->
+        <div class="col-md-8">
+            <h1>{{ book.title }}</h1>
+            {% if book.subtitle %}
+                <h3 class="text-muted">{{ book.subtitle }}</h3>
+            {% endif %}
+
+            <hr>
+
+            <div class="book-meta">
+                <p><strong>Yazar:</strong> 
+                    <a href="{% url 'author_profile' book.author.username %}">
+                        {{ book.author.username }}
+                        {% if book.author.title %}
+                            ({{ book.author.get_title_display }})
+                        {% endif %}
+                    </a>
+                </p>
+                
+                {% if book.publisher %}
+                    <p><strong>Yayınevi:</strong> {{ book.publisher }}</p>
+                {% endif %}
+                
+                {% if book.publication_year %}
+                    <p><strong>Yayın Yılı:</strong> {{ book.publication_year }}</p>
+                {% endif %}
+                
+                {% if book.page_count %}
+                    <p><strong>Sayfa Sayısı:</strong> {{ book.page_count }}</p>
+                {% endif %}
+                
+                <p><strong>Dil:</strong> {{ book.language }}</p>
+                
+                <p><strong>Kategoriler:</strong>
+                    {% for cat in book.categories.all %}
+                        <a href="{% url 'category_detail' cat.slug %}" class="label label-primary">
+                            {{ cat.name }}
+                        </a>
+                    {% endfor %}
+                </p>
+                
+                <p>
+                    <i class="fa fa-eye"></i> {{ book.view_count }} görüntülenme |
+                    <i class="fa fa-download"></i> {{ book.download_count }} indirme |
+                    <i class="fa fa-calendar"></i> {{ book.published_at|date:"d M Y" }}
+                </p>
+            </div>
+
+            <hr>
+
+            <!-- Book Description -->
+            {% if book.description %}
+            <div class="book-description">
+                <h3>Kitap Hakkında</h3>
+                <p>{{ book.description|linebreaks }}</p>
+            </div>
+            {% endif %}
+
+            <!-- AI Summary (Premium Only) -->
+            {% if book.ai_summary %}
+            <div class="book-summary" style="margin-top: 30px;">
+                <h3>
+                    <i class="fa fa-magic"></i> AI Özeti
+                    {% if not user.can_view_summaries and not user.is_admin_user %}
+                        <span class="label label-warning">Premium</span>
+                    {% endif %}
+                </h3>
+                
+                {% if user.can_view_summaries or user.is_admin_user %}
+                    <div class="well">
+                        {{ book.ai_summary|linebreaks }}
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">
+                        <i class="fa fa-lock"></i> Bu özet sadece <strong>Premium</strong> üyeler için!
+                        <a href="{% url 'premium_upgrade' %}" class="btn btn-warning btn-sm">
+                            Premium Ol
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Table of Contents -->
+            {% if book.has_toc and chapters %}
+            <div class="book-toc" style="margin-top: 30px;">
+                <h3><i class="fa fa-list"></i> İçindekiler</h3>
+                <div class="list-group">
+                    {% for chapter in chapters %}
+                        <a href="{% url 'chapter_read' book.slug chapter.slug %}" 
+                           class="list-group-item" 
+                           style="padding-left: {{ chapter.level|add:'0' }}0px;">
+                            <span class="badge">{{ chapter.chapter_number }}</span>
+                            {{ chapter.title }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Reading Progress -->
+            {% if user.is_authenticated and reading_progress %}
+            <div class="reading-progress" style="margin-top: 30px;">
+                <h3><i class="fa fa-tasks"></i> Okuma İlerlemeniz</h3>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-success" role="progressbar" 
+                         style="width: {{ reading_progress.progress_percentage }}%">
+                        {{ reading_progress.progress_percentage }}%
+                    </div>
+                </div>
+                <p>Son okunan: {{ reading_progress.last_read_at|date:"d M Y H:i" }}</p>
+                {% if reading_progress.chapter %}
+                    <a href="{% url 'chapter_read' book.slug reading_progress.chapter.slug %}" 
+                       class="btn btn-primary">
+                        <i class="fa fa-play"></i> Kaldığınız Yerden Devam Edin
+                    </a>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Ratings -->
+            <div class="book-ratings" style="margin-top: 30px;">
+                <h3><i class="fa fa-star"></i> Değerlendirmeler</h3>
+                
+                {% if user.is_authenticated %}
+                    <form method="POST" action="{% url 'add_rating' book.slug %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label>Puanınız:</label>
+                            <select name="rating" class="form-control" style="width: auto; display: inline;">
+                                <option value="5">5 - Mükemmel</option>
+                                <option value="4">4 - Çok İyi</option>
+                                <option value="3">3 - İyi</option>
+                                <option value="2">2 - Orta</option>
+                                <option value="1">1 - Kötü</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Yorumunuz:</label>
+                            <textarea name="review" class="form-control" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-send"></i> Değerlendirme Gönder
+                        </button>
+                    </form>
+                    <hr>
+                {% endif %}
+
+                {% if ratings %}
+                    {% for rating in ratings %}
+                    <div class="rating-item" style="border-bottom: 1px solid #eee; padding: 15px 0;">
+                        <div class="rating-header">
+                            <strong>{{ rating.user.username }}</strong>
+                            <span class="pull-right">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= rating.rating %}
+                                        <i class="fa fa-star text-warning"></i>
+                                    {% else %}
+                                        <i class="fa fa-star-o text-muted"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </span>
+                        </div>
+                        {% if rating.review %}
+                        <p>{{ rating.review }}</p>
+                        {% endif %}
+                        <small class="text-muted">{{ rating.created_at|date:"d M Y" }}</small>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">Henüz değerlendirme yapılmamış.</p>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+function addBookmark() {
+    // AJAX ile yer imi ekle
+    fetch("{% url 'add_bookmark' book.slug %}", {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Yer imi eklendi!');
+            location.reload();
+        }
+    });
+}
+</script>
+{% endblock %}

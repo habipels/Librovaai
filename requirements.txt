@@ -1,0 +1,19 @@
+# Django Core
+django
+pillow
+six
+
+# Django Extensions
+django-tinymce
+django-crispy-forms
+django-recaptcha
+fontawesomefree
+
+# Kitap Platformu için Gerekli Paketler
+PyPDF2                 # PDF dosyalarını okumak için
+python-docx            # Word dosyalarını okumak için
+
+# AI Entegrasyonu (Opsiyonel - USE_AI_PROCESSING=True ise gerekli)
+# openai              # OpenAI API için (özet üretimi)
+# anthropic           # Anthropic Claude için (alternatif)
+# google-generativeai # Google Gemini için (alternatif)

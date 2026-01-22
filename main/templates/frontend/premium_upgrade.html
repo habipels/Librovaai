@@ -1,0 +1,136 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+
+{% block title %}Premium Üyelik - Librovaai{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 30px; margin-bottom: 30px;">
+    
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1><i class="fa fa-star text-warning"></i> Premium Üyelik</h1>
+            <p class="lead">Tüm kitap özetlerine erişin ve daha fazlasını keşfedin!</p>
+            <hr>
+        </div>
+    </div>
+
+    <!-- Features -->
+    <div class="row" style="margin-top: 40px;">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3>Normal Üyelik</h3>
+                    <h2>Ücretsiz</h2>
+                </div>
+                <div class="panel-body">
+                    <ul class="list-unstyled" style="font-size: 16px;">
+                        <li><i class="fa fa-check text-success"></i> Kitapları görüntüleme</li>
+                        <li><i class="fa fa-check text-success"></i> İçindekiler</li>
+                        <li><i class="fa fa-check text-success"></i> Kitap okuma</li>
+                        <li><i class="fa fa-times text-danger"></i> AI özetleri</li>
+                        <li><i class="fa fa-times text-danger"></i> Yer imleri</li>
+                        <li><i class="fa fa-times text-danger"></i> Okuma ilerlemesi</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="panel panel-warning" style="border: 3px solid #f39c12;">
+                <div class="panel-heading" style="background-color: #f39c12; color: white;">
+                    <h3>Premium Üyelik <i class="fa fa-star"></i></h3>
+                    <h2>₺29.99 / Ay</h2>
+                </div>
+                <div class="panel-body">
+                    <ul class="list-unstyled" style="font-size: 16px;">
+                        <li><i class="fa fa-check text-success"></i> Tüm normal özellikler</li>
+                        <li><i class="fa fa-check text-success"></i> <strong>AI ile üretilmiş kitap özetleri</strong></li>
+                        <li><i class="fa fa-check text-success"></i> <strong>AI bölüm özetleri</strong></li>
+                        <li><i class="fa fa-check text-success"></i> <strong>Yer imi ekleme</strong></li>
+                        <li><i class="fa fa-check text-success"></i> <strong>Okuma ilerlemesi takibi</strong></li>
+                        <li><i class="fa fa-check text-success"></i> <strong>Öncelikli destek</strong></li>
+                        <li><i class="fa fa-check text-success"></i> <strong>Reklamsız deneyim</strong></li>
+                    </ul>
+                    
+                    {% if user.is_authenticated %}
+                        {% if user.is_premium %}
+                            <button class="btn btn-success btn-lg btn-block" disabled>
+                                <i class="fa fa-check"></i> Zaten Premium Üyesiniz
+                            </button>
+                        {% else %}
+                            <a href="#" class="btn btn-warning btn-lg btn-block" onclick="alert('Ödeme sistemi henüz entegre edilmemiştir.')">
+                                <i class="fa fa-star"></i> Şimdi Premium Ol
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'login' %}?next={% url 'premium_upgrade' %}" class="btn btn-warning btn-lg btn-block">
+                            <i class="fa fa-sign-in"></i> Giriş Yapın
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Benefits Detail -->
+    <div class="row" style="margin-top: 40px;">
+        <div class="col-md-12">
+            <h2 class="text-center">Neden Premium?</h2>
+            <hr>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="text-center">
+                <i class="fa fa-magic" style="font-size: 60px; color: #f39c12;"></i>
+                <h3>AI Özetler</h3>
+                <p>Her kitap için AI tarafından oluşturulmuş profesyonel özetler okuyun.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="text-center">
+                <i class="fa fa-bookmark" style="font-size: 60px; color: #3498db;"></i>
+                <h3>Yer İmleri</h3>
+                <p>İstediğiniz bölümleri işaretleyin ve kolayca geri dönün.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="text-center">
+                <i class="fa fa-line-chart" style="font-size: 60px; color: #2ecc71;"></i>
+                <h3>İlerleme Takibi</h3>
+                <p>Okuma ilerlemenizi görün ve kaldığınız yerden devam edin.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="row" style="margin-top: 60px;">
+        <div class="col-md-12">
+            <h2 class="text-center">Sık Sorulan Sorular</h2>
+            <hr>
+        </div>
+
+        <div class="col-md-6">
+            <h4><i class="fa fa-question-circle"></i> Premium üyelik nasıl iptal edilir?</h4>
+            <p>İstediğiniz zaman hesap ayarlarından üyeliğinizi iptal edebilirsiniz.</p>
+        </div>
+
+        <div class="col-md-6">
+            <h4><i class="fa fa-question-circle"></i> Hangi ödeme yöntemlerini kabul ediyorsunuz?</h4>
+            <p>Kredi kartı, banka kartı ve dijital cüzdanlar kabul edilmektedir.</p>
+        </div>
+
+        <div class="col-md-6">
+            <h4><i class="fa fa-question-circle"></i> Premium üyelik otomatik yenilenir mi?</h4>
+            <p>Evet, ancak istediğiniz zaman otomatik yenilemeyi kapatabilirsiniz.</p>
+        </div>
+
+        <div class="col-md-6">
+            <h4><i class="fa fa-question-circle"></i> Ücret iadesi yapılır mı?</h4>
+            <p>İlk 14 gün içinde koşulsuz ücret iadesi yapılmaktadır.</p>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
