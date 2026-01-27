@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'tinymce',
     'fontawesomefree',
     'crispy_forms',
-    'crispy_bootstrap4',
     'captcha',
 ]
 
@@ -58,7 +57,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'main.middleware.MaintenanceModeMiddleware',  # Bakım modu
 ]
 
 ROOT_URLCONF = 'djang_website.urls'
@@ -66,7 +64,7 @@ ROOT_URLCONF = 'djang_website.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -74,7 +72,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'main.context_processors.site_settings',  # Site ayarları
             ],
         },
     },
@@ -131,7 +128,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
@@ -158,16 +154,7 @@ EMAIL_USE_TLS = True
 
 PASSWORD_RESET_TIMEOUT = 14400
 
-DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800 # 50MB (kitap dosyaları için)
-
-# ==================== KİTAP PLATFORMU AYARLARI ====================
-# AI Processing (OpenAI API)
-USE_AI_PROCESSING = False  # True yaparak AI özelliklerini aktif edebilirsiniz
-OPENAI_API_KEY = None  # Buraya OpenAI API key'inizi ekleyin
-
-# Türkçe dil ayarları
-LANGUAGE_CODE = 'tr-tr'
-TIME_ZONE = 'Europe/Istanbul'
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880 # 5MB
 
 TINYMCE_DEFAULT_CONFIG = {
     'custom_undo_redo_levels': 100,
