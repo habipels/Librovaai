@@ -1,4 +1,10 @@
 {% extends "main/header.html" %}
+{% block slider %}
+        <!-- Start: Slider Section -->
+        {% include "includes/slider.html" %}
+        <!-- End: Slider Section -->
+{% endblock slider %}
+
 {% block content %}
     <div class="row display-flex justify-content-start">
     {% for object in objects %}

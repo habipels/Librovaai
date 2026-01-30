@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block slider %}{% endblock slider %}
+
+{% block content %}
+<!-- Start: Page Banner -->
+<section class="page-banner services-banner" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 80px 0;">
+    <div class="container">
+        <div class="banner-header text-center" style="color: white;">
+            <h2 style="font-weight: 700; font-size: 42px; margin-bottom: 20px;">{{ article.title }}</h2>
+            <span class="underline center" style="background: white;"></span>
+            <p class="lead" style="font-size: 18px; margin-top: 20px;">{{ article.subtitle }}</p>
+        </div>
+        <div class="breadcrumb" style="margin-top: 30px;">
+            <ul style="justify-content: center; display: flex; list-style: none; padding: 0;">
+                <li style="color: white;"><a href="{% url 'homepage' %}" style="color: white;">Ana Sayfa</a></li>
+                <li style="color: white; margin: 0 10px;">/</li>
+                <li style="color: white;"><a href="{% url 'blog_list' %}" style="color: white;">Blog</a></li>
+                <li style="color: white; margin: 0 10px;">/</li>
+                <li style="color: white;">{{ article.title|truncatewords:5 }}</li>
+            </ul>
+        </div>
+    </div>
+</section>
+<!-- End: Page Banner -->
+
+<!-- Start: Blog Detail Section -->
+<div id="content" class="site-content" style="padding: 80px 0; background: #f8f9fa;">
+    <div id="primary" class="content-area">
+        <main id="main" class="site-main">
+            <div class="blog-detail-main">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-9 col-md-8">
+                            <div class="blog-section">
+                                <article>
+                                    <div class="blog-detail" style="background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 5px 30px rgba(0,0,0,0.1);">
+                                        <header class="entry-header" style="padding: 30px 40px; border-bottom: 2px solid #f0f0f0;">
+                                            <div class="blog_meta_category" style="margin-bottom: 15px;">
+                                                <a href="{% url 'blog_series' article.series.slug %}" rel="category tag" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 8px 20px; border-radius: 20px; font-weight: 600;">
+                                                    {{ article.series.title }}
+                                                </a>
+                                            </div>
+                                            <h2 class="entry-title" style="font-size: 36px; font-weight: 700; color: #333; margin-bottom: 20px;">
+                                                {{ article.title }}
+                                            </h2>
+                                            <div class="entry-meta" style="color: #888; font-size: 15px;">
+                                                <span style="margin-right: 20px;">
+                                                    <i class="fa fa-user" style="color: #667eea;"></i> 
+                                                    <a href="{% url 'profile' article.author.username %}" style="color: #667eea;">
+                                                        {{ article.author.get_full_name|default:article.author.username }}
+                                                    </a>
+                                                </span>
+                                                <span style="margin-right: 20px;">
+                                                    <i class="fa fa-calendar" style="color: #667eea;"></i> 
+                                                    {{ article.published|date:"d F Y" }}
+                                                </span>
+                                                <span>
+                                                    <i class="fa fa-clock" style="color: #667eea;"></i> 
+                                                    {{ article.modified|date:"H:i" }}
+                                                </span>
+                                            </div>
+                                        </header>
+                                        
+                                        {% if article.image %}
+                                        <div class="post-thumbnail">
+                                            <div class="post-date-box" style="position: absolute; top: 30px; left: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 20px; border-radius: 10px; z-index: 10;">
+                                                <div class="post-date">
+                                                    <a class="date" style="color: white; font-size: 32px; font-weight: 700; display: block;">{{ article.published|date:"d" }}</a>
+                                                </div>
+                                                <div class="post-date-month">
+                                                    <a class="month" style="color: white; font-size: 16px;">{{ article.published|date:"M" }}</a>
+                                                </div>
+                                            </div>
+                                            <figure>
+                                                <img alt="{{ article.title }}" src="{{ article.image.url }}" style="width: 100%; height: 500px; object-fit: cover;" />
+                                            </figure>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <div class="post-detail" style="padding: 40px;">
+                                            <div class="entry-content" style="font-size: 18px; line-height: 1.8; color: #555;">
+                                                {{ article.content|safe }}
+                                            </div>
+                                            
+                                            {% if article.notes %}
+                                            <div class="article-notes" style="margin-top: 40px; padding: 30px; background: #f8f9fa; border-left: 5px solid #667eea; border-radius: 10px;">
+                                                <h4 style="color: #667eea; margin-bottom: 20px;"><i class="fa fa-sticky-note"></i> Notlar</h4>
+                                                <div style="color: #666;">
+                                                    {{ article.notes|safe }}
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            
+                                            <!-- Tags & Share -->
+                                            <div class="post-footer" style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #f0f0f0;">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="post-tags">
+                                                            <strong style="color: #667eea;"><i class="fa fa-tags"></i> Etiketler:</strong>
+                                                            <a href="{% url 'blog_series' article.series.slug %}" style="background: #e0e0e0; color: #333; padding: 5px 15px; border-radius: 20px; margin-left: 10px;">
+                                                                {{ article.series.title }}
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 text-right">
+                                                        <div class="post-share">
+                                                            <strong style="color: #667eea;"><i class="fa fa-share-alt"></i> Paylaş:</strong>
+                                                            <a href="#" style="color: #3b5998; margin-left: 10px; font-size: 20px;"><i class="fa fa-facebook"></i></a>
+                                                            <a href="#" style="color: #1da1f2; margin-left: 10px; font-size: 20px;"><i class="fa fa-twitter"></i></a>
+                                                            <a href="#" style="color: #0077b5; margin-left: 10px; font-size: 20px;"><i class="fa fa-linkedin"></i></a>
+                                                            <a href="#" style="color: #25d366; margin-left: 10px; font-size: 20px;"><i class="fa fa-whatsapp"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Author Box -->
+                                            <div class="author-box" style="margin-top: 40px; padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; color: white;">
+                                                <div class="row">
+                                                    <div class="col-md-2 text-center">
+                                                        <img src="{{ article.author.image.url }}" alt="{{ article.author.username }}" style="width: 100px; height: 100px; border-radius: 50%; border: 5px solid white; object-fit: cover;">
+                                                    </div>
+                                                    <div class="col-md-10">
+                                                        <h4 style="margin-bottom: 10px; font-weight: 600;">
+                                                            {{ article.author.get_full_name|default:article.author.username }}
+                                                        </h4>
+                                                        {% if article.author.description %}
+                                                        <p style="opacity: 0.9; margin-bottom: 15px;">{{ article.author.description }}</p>
+                                                        {% endif %}
+                                                        <a href="{% url 'profile' article.author.username %}" class="btn btn-light btn-sm" style="border-radius: 20px;">
+                                                            <i class="fa fa-user"></i> Profili Görüntüle
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+                            </div>
+                        </div>
+                        
+                        <!-- Sidebar -->
+                        <div class="col-lg-3 col-md-4">
+                            <aside class="sidebar">
+                                <!-- Related Articles -->
+                                {% if related_articles %}
+                                <div class="widget" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); margin-bottom: 30px;">
+                                    <div class="widget-title" style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 3px solid #667eea;">
+                                        <h4 style="color: #667eea; font-weight: 600;"><i class="fa fa-newspaper"></i> İlgili Yazılar</h4>
+                                    </div>
+                                    <div class="widget-content">
+                                        {% for related in related_articles %}
+                                        <div class="related-post" style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #f0f0f0;">
+                                            <a href="{% url 'blog_detail' related.series.slug related.article_slug %}" style="color: #333; font-weight: 600; display: block; margin-bottom: 5px;">
+                                                {{ related.title|truncatewords:8 }}
+                                            </a>
+                                            <small style="color: #888;">
+                                                <i class="fa fa-calendar"></i> {{ related.published|date:"d M Y" }}
+                                            </small>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                                
+                                <!-- Series Info -->
+                                <div class="widget" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); margin-bottom: 30px;">
+                                    <div class="widget-title" style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 3px solid #667eea;">
+                                        <h4 style="color: #667eea; font-weight: 600;"><i class="fa fa-layer-group"></i> Seri</h4>
+                                    </div>
+                                    <div class="widget-content">
+                                        <h5 style="margin-bottom: 10px;">{{ article.series.title }}</h5>
+                                        {% if article.series.subtitle %}
+                                        <p style="color: #666; font-size: 14px;">{{ article.series.subtitle }}</p>
+                                        {% endif %}
+                                        <a href="{% url 'blog_series' article.series.slug %}" class="btn btn-primary btn-sm btn-block" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 20px; margin-top: 15px;">
+                                            Serideki Tüm Yazılar
+                                        </a>
+                                    </div>
+                                </div>
+                                
+                                <!-- Back to Blog -->
+                                <div class="widget" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px; border-radius: 15px; text-align: center; color: white;">
+                                    <i class="fa fa-arrow-left" style="font-size: 40px; margin-bottom: 15px;"></i>
+                                    <h5 style="margin-bottom: 15px;">Daha Fazla İçerik</h5>
+                                    <a href="{% url 'blog_list' %}" class="btn btn-light btn-block" style="border-radius: 20px;">
+                                        Tüm Blog Yazıları
+                                    </a>
+                                </div>
+                            </aside>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<!-- End: Blog Detail Section -->
+
+<style>
+.entry-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+.entry-content h2,
+.entry-content h3,
+.entry-content h4 {
+    color: #667eea;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.entry-content p {
+    margin-bottom: 20px;
+}
+
+.entry-content ul,
+.entry-content ol {
+    margin-bottom: 20px;
+    padding-left: 30px;
+}
+
+.entry-content code {
+    background: #f4f4f4;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+}
+
+.entry-content pre {
+    background: #2d2d2d;
+    color: #f8f8f2;
+    padding: 20px;
+    border-radius: 10px;
+    overflow-x: auto;
+    margin: 20px 0;
+}
+
+.widget:hover {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15) !important;
+}
+</style>
+
+{% endblock content %}

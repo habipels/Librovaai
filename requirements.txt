@@ -6,6 +6,7 @@ six
 # Django Extensions
 django-tinymce
 django-crispy-forms
+crispy-bootstrap3
 django-recaptcha
 fontawesomefree
 

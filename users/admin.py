@@ -70,6 +70,45 @@ class CustomUserAdmin(UserAdmin):
 
 @admin.register(SubscribedUsers)
 class SubscribedUsersAdmin(admin.ModelAdmin):
-    list_display = ('email', 'name', 'created_date')
+    list_display = ['email_badge', 'name', 'created_badge', 'status_badge']
     search_fields = ['email', 'name']
     list_filter = ['created_date']
+    readonly_fields = ['created_date']
+    
+    fieldsets = [
+        ("Abone Bilgileri", {
+            "fields": ['email', 'name']
+        }),
+        ("Tarih", {
+            "fields": ['created_date']
+        }),
+    ]
+    
+    actions = ['export_emails']
+    
+    def email_badge(self, obj):
+        return format_html(
+            '<a href="mailto:{}" style="color: #667eea; text-decoration: none; font-weight: 500;">📧 {}</a>',
+            obj.email,
+            obj.email
+        )
+    email_badge.short_description = 'E-posta'
+    
+    def created_badge(self, obj):
+        return format_html(
+            '<span style="color: #6c757d; font-size: 12px;">🗓️ {}</span>',
+            obj.created_date.strftime('%d.%m.%Y %H:%M')
+        )
+    created_badge.short_description = 'Kayıt Tarihi'
+    
+    def status_badge(self, obj):
+        return format_html(
+            '<span style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; padding: 3px 10px; border-radius: 12px; font-size: 11px;">✓ Aktif</span>'
+        )
+    status_badge.short_description = 'Durum'
+    
+    def export_emails(self, request, queryset):
+        emails = [user.email for user in queryset]
+        email_list = ', '.join(emails)
+        self.message_user(request, f'E-postalar: {email_list}')
+    export_emails.short_description = 'E-postaları listele'

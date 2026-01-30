@@ -1,0 +1,170 @@
+{% extends "admin/index.html" %}
+{% load static %}
+
+{% block content %}
+<div id="content-main">
+    
+    <!-- Welcome Banner -->
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 4px 20px rgba(102,126,234,0.3);">
+        <h1 style="margin: 0 0 10px; font-size: 28px; font-weight: 700;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16" style="vertical-align: middle; margin-right: 10px;">
+                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+            </svg>
+            Hoş Geldiniz, {{ user.get_full_name|default:user.username }}!
+        </h1>
+        <p style="margin: 0; font-size: 16px; opacity: 0.95;">Librovaai Yönetim Paneli - Tüm sistem kontrolleri burada</p>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+        
+        <!-- Total Books -->
+        <div class="dashboard-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="margin: 0 0 10px; font-size: 14px; opacity: 0.9; font-weight: 500;">Toplam Kitap</h3>
+                    <div class="stat-number" style="font-size: 36px; font-weight: 700; color: white;">
+                        {{ total_books|default:0 }}
+                    </div>
+                </div>
+                <div style="font-size: 48px; opacity: 0.2;">📚</div>
+            </div>
+        </div>
+
+        <!-- Total Users -->
+        <div class="dashboard-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="margin: 0 0 10px; font-size: 14px; opacity: 0.9; font-weight: 500;">Toplam Kullanıcı</h3>
+                    <div class="stat-number" style="font-size: 36px; font-weight: 700; color: white;">
+                        {{ total_users|default:0 }}
+                    </div>
+                </div>
+                <div style="font-size: 48px; opacity: 0.2;">👥</div>
+            </div>
+        </div>
+
+        <!-- Total Articles -->
+        <div class="dashboard-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="margin: 0 0 10px; font-size: 14px; opacity: 0.9; font-weight: 500;">Toplam Makale</h3>
+                    <div class="stat-number" style="font-size: 36px; font-weight: 700; color: white;">
+                        {{ total_articles|default:0 }}
+                    </div>
+                </div>
+                <div style="font-size: 48px; opacity: 0.2;">📝</div>
+            </div>
+        </div>
+
+        <!-- Pending Approvals -->
+        <div class="dashboard-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="margin: 0 0 10px; font-size: 14px; opacity: 0.9; font-weight: 500;">Bekleyen Onay</h3>
+                    <div class="stat-number" style="font-size: 36px; font-weight: 700; color: white;">
+                        {{ pending_books|default:0 }}
+                    </div>
+                </div>
+                <div style="font-size: 48px; opacity: 0.2;">⏳</div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Quick Actions -->
+    <div style="background: white; border-radius: 12px; padding: 25px; margin-bottom: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+        <h2 style="margin: 0 0 20px; color: #667eea; font-size: 20px; font-weight: 600; display: flex; align-items: center; gap: 10px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
+                <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319z"/>
+            </svg>
+            Hızlı İşlemler
+        </h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+            
+            <a href="{% url 'admin:main_book_add' %}" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 8px; transition: all 0.3s ease; font-weight: 500;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                </svg>
+                Yeni Kitap Ekle
+            </a>
+            
+            <a href="{% url 'admin:main_article_add' %}" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; text-decoration: none; border-radius: 8px; transition: all 0.3s ease; font-weight: 500;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                </svg>
+                Yeni Makale Ekle
+            </a>
+            
+            <a href="{% url 'admin:users_customuser_changelist' %}?is_author_approved__exact=0&user_role__exact=author" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; text-decoration: none; border-radius: 8px; transition: all 0.3s ease; font-weight: 500;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
+                    <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5z"/>
+                </svg>
+                Yazar Onayları
+            </a>
+            
+            <a href="{% url 'admin:main_sitesettings_changelist' %}" style="display: flex; align-items: center; gap: 12px; padding: 15px 20px; background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #333; text-decoration: none; border-radius: 8px; transition: all 0.3s ease; font-weight: 500;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
+                </svg>
+                Site Ayarları
+            </a>
+            
+        </div>
+    </div>
+
+    <!-- Recent Activity Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px;">
+        
+        <!-- Recent Books -->
+        <div style="background: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            <h3 style="margin: 0 0 20px; color: #667eea; font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 10px;">
+                📚 Son Eklenen Kitaplar
+            </h3>
+            {% if recent_books %}
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                {% for book in recent_books %}
+                <li style="padding: 12px; margin-bottom: 10px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #667eea; transition: all 0.2s ease;">
+                    <a href="{% url 'admin:main_book_change' book.id %}" style="text-decoration: none; color: #333; font-weight: 500; display: block;">
+                        {{ book.title|truncatewords:8 }}
+                    </a>
+                    <small style="color: #6c757d;">{{ book.author.username }} • {{ book.created_at|date:"d.m.Y" }}</small>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p style="color: #6c757d; text-align: center; padding: 20px;">Henüz kitap eklenmemiş</p>
+            {% endif %}
+        </div>
+
+        <!-- Recent Users -->
+        <div style="background: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            <h3 style="margin: 0 0 20px; color: #f5576c; font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 10px;">
+                👥 Yeni Kullanıcılar
+            </h3>
+            {% if recent_users %}
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                {% for user in recent_users %}
+                <li style="padding: 12px; margin-bottom: 10px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #f5576c; transition: all 0.2s ease;">
+                    <a href="{% url 'admin:users_customuser_change' user.id %}" style="text-decoration: none; color: #333; font-weight: 500; display: block;">
+                        {{ user.username }}
+                        {% if user.is_premium %}<span style="color: #f39c12;">⭐</span>{% endif %}
+                    </a>
+                    <small style="color: #6c757d;">{{ user.email }} • {{ user.date_joined|date:"d.m.Y" }}</small>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p style="color: #6c757d; text-align: center; padding: 20px;">Henüz kullanıcı kaydı yok</p>
+            {% endif %}
+        </div>
+        
+    </div>
+
+</div>
+
+{{ block.super }}
+{% endblock %}

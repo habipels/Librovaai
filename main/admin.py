@@ -2,26 +2,81 @@ from django.contrib import admin
 from .models import Article, ArticleSeries, SiteSettings, Book, Chapter, BookSummary, BookCategory
 from django.utils.html import format_html
 
+
+@admin.register(ArticleSeries)
 class ArticleSeriesAdmin(admin.ModelAdmin):
+    list_display = ['title', 'author', 'article_count', 'published_badge', 'has_image']
+    list_filter = ['author', 'published']
+    search_fields = ['title', 'subtitle', 'author__username']
+    prepopulated_fields = {'slug': ('title',)}
+    readonly_fields = ['published']
+    
     fields = [
         'title',
         'subtitle',
         'slug',
         'author',
         'image',
-        # 'published'
+        'published'
     ]
+    
+    def article_count(self, obj):
+        count = obj.article_set.count()
+        return format_html('<span style="font-weight: bold; color: #667eea;">{} Makale</span>', count)
+    article_count.short_description = 'Makale Sayısı'
+    
+    def published_badge(self, obj):
+        return format_html(
+            '<span style="color: #6c757d; font-size: 12px;">{}</span>',
+            obj.published.strftime('%d.%m.%Y')
+        )
+    published_badge.short_description = 'Yayın Tarihi'
+    
+    def has_image(self, obj):
+        if obj.image:
+            return format_html('<span style="color: green;">✓</span>')
+        return format_html('<span style="color: red;">✗</span>')
+    has_image.short_description = 'Resim'
 
+
+@admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
+    list_display = ['title', 'series', 'author', 'status_badge', 'view_count_badge', 'modified']
+    list_filter = ['series', 'author', 'modified']
+    search_fields = ['title', 'subtitle', 'content', 'author__username']
+    prepopulated_fields = {'article_slug': ('title',)}
+    readonly_fields = ['modified', 'views_display']
+    
     fieldsets = [
-        ("Header", {"fields": ['title', 'subtitle', 'article_slug', 'series', 'author', 'image']}),
-        ("Content", {"fields": ['content', 'notes']}),
-        ("Date", {"fields": ['modified']})
+        ("Başlık ve Seri", {
+            "fields": ['title', 'subtitle', 'article_slug', 'series', 'author']
+        }),
+        ("İçerik", {
+            "fields": ['content', 'notes']
+        }),
+        ("Görsel", {
+            "fields": ['image']
+        }),
+        ("İstatistikler", {
+            "fields": ['views_display', 'modified'],
+            "classes": ['collapse']
+        })
     ]
-
-# Register your models here.
-admin.site.register(ArticleSeries, ArticleSeriesAdmin)
-admin.site.register(Article, ArticleAdmin)
+    
+    def status_badge(self, obj):
+        return format_html(
+            '<span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 3px 10px; border-radius: 12px; font-size: 11px;">Yayında</span>'
+        )
+    status_badge.short_description = 'Durum'
+    
+    def view_count_badge(self, obj):
+        # Görüntülenme sayısı henüz modelde yok, placeholder
+        return format_html('<span style="color: #667eea; font-weight: bold;">👁️ -</span>')
+    view_count_badge.short_description = 'Görüntülenme'
+    
+    def views_display(self, obj):
+        return format_html('<p style="color: #6c757d;">Görüntülenme takibi eklenecek</p>')
+    views_display.short_description = 'Görüntülenmeler'
 
 
 @admin.register(SiteSettings)

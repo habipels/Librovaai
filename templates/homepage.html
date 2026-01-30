@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- Start: Welcome Section -->
+<section class="welcome-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <div class="welcome-wrap">
+                    <div class="welcome-text">
+                        <h2 class="section-title">{{ site_settings.site_name }}'ya Hoşgeldiniz</h2>
+                        <span class="underline center"></span>
+                        <p class="lead">Binlerce dijital kitap, e-kitap ve içeriğe anında erişim</p>
+                        <p>{{ site_settings.site_description }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End: Welcome Section -->
+
+<!-- Start: Latest Books -->
+<section class="latest-books section-padding" style="background: #f8f9fa;">
+    <div class="container">
+        <div class="center-content">
+            <h2 class="section-title">Son Eklenen Kitaplar</h2>
+            <span class="underline center"></span>
+            <p class="lead">En son yüklenen kitapları keşfedin</p>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <p style="padding: 60px 0; color: #888;">Yakında burada kitaplar listelenecek...</p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End: Latest Books -->
+
+<!-- Start: Latest Blog -->
+<section class="latest-blog section-padding">
+    <div class="container">
+        <div class="center-content">
+            <h2 class="section-title">Son Blog Yazıları</h2>
+            <span class="underline center"></span>
+            <p class="lead">En son blog yazılarımızı okuyun</p>
+        </div>
+        <div class="row">
+            {% if objects %}
+                {% for article in objects %}
+                <div class="col-md-4">
+                    <article style="background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.1); margin-bottom: 30px;">
+                        {% if article.image %}
+                        <img src="{{ article.image.url }}" alt="{{ article.title }}" style="width: 100%; height: 250px; object-fit: cover;">
+                        {% else %}
+                        <div style="width: 100%; height: 250px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 50px;">
+                            <i class="fa fa-newspaper"></i>
+                        </div>
+                        {% endif %}
+                        <div style="padding: 25px;">
+                            <h4 style="margin-bottom: 15px;">{{ article.title|truncatewords:8 }}</h4>
+                            <p style="color: #666; margin-bottom: 20px;">{{ article.subtitle|truncatewords:15 }}</p>
+                            <a href="{% url 'blog_series' article.slug %}" class="btn btn-primary" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 20px;">
+                                Devamını Oku
+                            </a>
+                        </div>
+                    </article>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-md-12 text-center">
+                    <p style="padding: 60px 0; color: #888;">Henüz blog yazısı bulunmuyor</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if objects %}
+        {% include "includes/pagination.html" %}
+        {% endif %}
+        
+        <div class="center-content" style="margin-top: 30px;">
+            <a href="{% url 'blog_list' %}" class="btn btn-primary" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 25px; padding: 12px 40px;">
+                Tüm Blog Yazıları
+            </a>
+        </div>
+    </div>
+</section>
+<!-- End: Latest Blog -->
+{% endblock content %}

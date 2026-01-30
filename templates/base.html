@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>        
+    <!-- Meta -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1">
+    
+    <!-- Title -->
+    <title>{% block title %}{% if site_settings.meta_title %}{{ site_settings.meta_title }}{% else %}{{ site_settings.site_name }}{% endif %}{% endblock title %}</title>
+    
+    <!-- SEO Meta Tags -->
+    {% block meta %}
+    {% if site_settings.meta_description %}
+    <meta name="description" content="{{ site_settings.meta_description }}">
+    {% endif %}
+    {% if site_settings.site_keywords %}
+    <meta name="keywords" content="{{ site_settings.site_keywords }}">
+    {% endif %}
+    <meta name="author" content="{{ site_settings.site_name }}">
+    {% endblock meta %}
+    
+    <!-- Favicon -->
+    {% if site_settings.favicon %}
+    <link href="{{ site_settings.favicon.url }}" rel="icon" type="image/x-icon" />
+    {% else %}
+    <link href="{% static 'images/favicon.ico' %}" rel="icon" type="image/x-icon" />
+    {% endif %}
+    
+    <!-- Google Analytics -->
+    {% if site_settings.google_analytics_id %}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ site_settings.google_analytics_id }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{ site_settings.google_analytics_id }}');
+    </script>
+    {% endif %}
+    
+    {% block extra_head %}{% endblock extra_head %}
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i%7CLato:100,100i,300,300i,400,400i,700,700i,900,900i" rel="stylesheet" />
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" type="text/css" />
+    
+    <!-- Mobile Menu -->
+    <link href="{% static 'css/mmenu.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/mmenu.positioning.css' %}" rel="stylesheet" type="text/css" />
+    
+    <!-- Stylesheet -->
+    <link href="{% static 'style.css' %}" rel="stylesheet" type="text/css" />
+    
+    {% block extra_css %}{% endblock extra_css %}
+    
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="{% static 'js/html5shiv.min.js' %}"></script>
+    <script src="{% static 'js/respond.min.js' %}"></script>
+    <![endif]-->
+</head>
+
+<body>
+    
+    <!-- Start: Header Section -->
+    {% block header %}
+    {% include "includes/header.html" %}
+    {% endblock header %}
+    <!-- End: Header Section -->
+    
+    <!-- Start: Slider/Banner Section -->
+    {% block slider %}
+    {% if show_slider %}
+    {% include "includes/slider.html" %}
+    {% endif %}
+    {% endblock slider %}
+    <!-- End: Slider/Banner Section -->
+    
+    <!-- Start: Main Content -->
+    <main id="main-content">
+        {% block content %}
+        <!-- Sayfa içeriği buraya gelecek -->
+        {% endblock content %}
+    </main>
+    <!-- End: Main Content -->
+    
+    <!-- Start: Footer -->
+    {% block footer %}
+    {% include "includes/footer.html" %}
+    {% endblock footer %}
+    <!-- End: Footer -->
+    
+    <!-- jQuery Latest Version 1.x -->
+    <script type="text/javascript" src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
+    
+    <!-- jQuery UI -->
+    <script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
+    
+    <!-- jQuery Easing -->
+    <script type="text/javascript" src="{% static 'js/jquery.easing.1.3.js' %}"></script>
+
+    <!-- Bootstrap -->
+    <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+    
+    <!-- Mobile Menu -->
+    <script type="text/javascript" src="{% static 'js/mmenu.min.js' %}"></script>
+    
+    <!-- Harvey - State manager for media queries -->
+    <script type="text/javascript" src="{% static 'js/harvey.min.js' %}"></script>
+    
+    <!-- Waypoints - Load Elements on View -->
+    <script type="text/javascript" src="{% static 'js/waypoints.min.js' %}"></script>
+
+    <!-- Facts Counter -->
+    <script type="text/javascript" src="{% static 'js/facts.counter.min.js' %}"></script>
+
+    <!-- MixItUp - Category Filter -->
+    <script type="text/javascript" src="{% static 'js/mixitup.min.js' %}"></script>
+
+    <!-- Owl Carousel -->
+    <script type="text/javascript" src="{% static 'js/owl.carousel.min.js' %}"></script>
+    
+    <!-- Accordion -->
+    <script type="text/javascript" src="{% static 'js/accordion.min.js' %}"></script>
+    
+    <!-- Responsive Tabs -->
+    <script type="text/javascript" src="{% static 'js/responsive.tabs.min.js' %}"></script>
+    
+    <!-- Responsive Table -->
+    <script type="text/javascript" src="{% static 'js/responsive.table.min.js' %}"></script>
+    
+    <!-- Masonry -->
+    <script type="text/javascript" src="{% static 'js/masonry.min.js' %}"></script>
+    
+    <!-- Carousel Swipe -->
+    <script type="text/javascript" src="{% static 'js/carousel.swipe.min.js' %}"></script>
+    
+    <!-- bxSlider -->
+    <script type="text/javascript" src="{% static 'js/bxslider.min.js' %}"></script>
+    
+    <!-- Custom Scripts -->
+    <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
+    
+    {% block extra_js %}{% endblock extra_js %}
+    
+</body>
+</html>

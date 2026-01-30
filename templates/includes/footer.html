@@ -1,0 +1,85 @@
+{% load static %}
+<footer class="site-footer">
+    <div class="container">
+        <div id="footer-widgets">
+            <div class="row">
+                <div class="col-md-4 col-sm-6 widget-container">
+                    <div class="widget-title">
+                        <h3>Hakkımızda</h3>
+                        <span class="underline left"></span>
+                    </div>
+                    <div class="about-text">
+                        {% if site_settings.footer_about %}
+                            <p>{{ site_settings.footer_about }}</p>
+                        {% else %}
+                            <p>{{ site_settings.site_name }} - Dijital kitap platformu. Binlerce kitaba erişin, okuyun ve keşfedin.</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 widget-container">
+                    <div class="widget-title">
+                        <h3>Hızlı Linkler</h3>
+                        <span class="underline left"></span>
+                    </div>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'homepage' %}">Ana Sayfa</a></li>
+                        <li><a href="#">Kitaplar</a></li>
+                        <li><a href="#">Yazarlar</a></li>
+                        <li><a href="{% url 'blog_list' %}">Blog</a></li>
+                        <li><a href="#">Hakkımızda</a></li>
+                        <li><a href="#">İletişim</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 col-sm-6 widget-container">
+                    <div class="widget-title">
+                        <h3>İletişim</h3>
+                        <span class="underline left"></span>
+                    </div>
+                    <div class="contact-info">
+                        {% if site_settings.contact_phone %}
+                        <p><i class="fa fa-phone"></i> {{ site_settings.contact_phone }}</p>
+                        {% endif %}
+                        {% if site_settings.contact_email %}
+                        <p><i class="fa fa-envelope"></i> {{ site_settings.contact_email }}</p>
+                        {% endif %}
+                        {% if site_settings.contact_address %}
+                        <p><i class="fa fa-map-marker"></i> {{ site_settings.contact_address }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="social-icons" style="margin-top: 20px;">
+                        {% if site_settings.facebook_url %}
+                        <a href="{{ site_settings.facebook_url }}" target="_blank"><i class="fa fa-facebook"></i></a>
+                        {% endif %}
+                        {% if site_settings.twitter_url %}
+                        <a href="{{ site_settings.twitter_url }}" target="_blank"><i class="fa fa-twitter"></i></a>
+                        {% endif %}
+                        {% if site_settings.instagram_url %}
+                        <a href="{{ site_settings.instagram_url }}" target="_blank"><i class="fa fa-instagram"></i></a>
+                        {% endif %}
+                        {% if site_settings.linkedin_url %}
+                        <a href="{{ site_settings.linkedin_url }}" target="_blank"><i class="fa fa-linkedin"></i></a>
+                        {% endif %}
+                        {% if site_settings.youtube_url %}
+                        <a href="{{ site_settings.youtube_url }}" target="_blank"><i class="fa fa-youtube"></i></a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sub-footer">
+        <div class="container">
+            <div class="row">
+                <div class="footer-text col-md-12 text-center">
+                    <p>
+                        {% if site_settings.footer_text %}
+                            {{ site_settings.footer_text }}
+                        {% else %}
+                            &copy; {% now "Y" %} {{ site_settings.site_name }}. Tüm hakları saklıdır.
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

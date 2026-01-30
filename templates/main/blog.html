@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block slider %}{% endblock slider %}
+
+{% block content %}
+<!-- Start: Page Banner -->
+<section class="page-banner services-banner" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 80px 0;">
+    <div class="container">
+        <div class="banner-header text-center" style="color: white;">
+            <h2 style="font-weight: 700; font-size: 48px; margin-bottom: 20px;">
+                {% if current_series %}{{ current_series.title }}{% else %}Blog Yazıları{% endif %}
+            </h2>
+            <span class="underline center" style="background: white;"></span>
+            <p class="lead" style="font-size: 20px; margin-top: 20px;">
+                {% if current_series %}
+                    {{ current_series.subtitle }}
+                {% else %}
+                    En son yazılarımızı ve içeriklerimizi keşfedin
+                {% endif %}
+            </p>
+        </div>
+        <div class="breadcrumb" style="margin-top: 30px;">
+            <ul style="justify-content: center; display: flex; list-style: none; padding: 0;">
+                <li style="color: white;"><a href="{% url 'homepage' %}" style="color: white;">Ana Sayfa</a></li>
+                <li style="color: white; margin: 0 10px;">/</li>
+                <li style="color: white;">Blog</li>
+            </ul>
+        </div>
+    </div>
+</section>
+<!-- End: Page Banner -->
+
+<!-- Start: Blog Section -->
+<div id="content" class="site-content" style="padding: 80px 0; background: #f8f9fa;">
+    <div id="primary" class="content-area">
+        <main id="main" class="site-main">
+            <div class="blog-main-list">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="blog-page">
+                                <section class="blog-section">
+                                    <div class="row">
+                                        {% for article in articles %}
+                                        <div class="col-md-4 col-sm-6 mb-4">
+                                            <article>
+                                                <div class="blog-item" style="background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.1); transition: transform 0.3s;">
+                                                    <div class="post-thumbnail" style="position: relative;">
+                                                        <div class="post-date-box" style="position: absolute; top: 20px; left: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 10px 15px; border-radius: 10px; z-index: 10;">
+                                                            <div class="post-date">
+                                                                <a class="date" style="color: white; font-size: 24px; font-weight: 700; display: block;">{{ article.published|date:"d" }}</a>
+                                                            </div>
+                                                            <div class="post-date-month">
+                                                                <a class="month" style="color: white; font-size: 14px;">{{ article.published|date:"M" }}</a>
+                                                            </div>
+                                                        </div>
+                                                        <a href="{% url 'blog_detail' article.series.slug article.article_slug %}">
+                                                            {% if article.image %}
+                                                                <img alt="{{ article.title }}" src="{{ article.image.url }}" style="width: 100%; height: 250px; object-fit: cover;" />
+                                                            {% else %}
+                                                                <div style="width: 100%; height: 250px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 50px;">
+                                                                    <i class="fa fa-newspaper"></i>
+                                                                </div>
+                                                            {% endif %}
+                                                        </a>
+                                                    </div>
+                                                    <div class="post-detail" style="padding: 25px;">
+                                                        <header class="entry-header">
+                                                            <div class="blog_meta_category" style="margin-bottom: 10px;">
+                                                                <span class="arrow-right"></span>
+                                                                <a href="{% url 'blog_series' article.series.slug %}" rel="category tag" style="color: #667eea; font-weight: 600;">{{ article.series.title }}</a>
+                                                            </div>
+                                                            <h3 class="entry-title" style="margin-bottom: 15px;">
+                                                                <a href="{% url 'blog_detail' article.series.slug article.article_slug %}" style="color: #333; font-weight: 600; font-size: 20px;">
+                                                                    {{ article.title|truncatewords:10 }}
+                                                                </a>
+                                                            </h3>
+                                                            <div class="entry-meta" style="color: #888; font-size: 14px;">
+                                                                <span><i class="fa fa-user"></i> <a href="{% url 'profile' article.author.username %}" style="color: #667eea;">{{ article.author.get_full_name|default:article.author.username }}</a></span>
+                                                            </div>
+                                                        </header>
+                                                        <div class="entry-content" style="margin-top: 15px; color: #666;">
+                                                            <p>{{ article.subtitle|truncatewords:20 }}</p>
+                                                        </div>
+                                                        <footer class="entry-footer" style="margin-top: 20px;">
+                                                            <a class="btn btn-primary" href="{% url 'blog_detail' article.series.slug article.article_slug %}" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 20px; padding: 10px 25px; color: white;">
+                                                                Devamını Oku
+                                                            </a>
+                                                        </footer>
+                                                    </div>
+                                                </div>
+                                            </article>
+                                        </div>
+                                        {% empty %}
+                                        <div class="col-md-12">
+                                            <div class="text-center" style="padding: 60px 0;">
+                                                <i class="fa fa-newspaper" style="font-size: 80px; color: #ddd;"></i>
+                                                <h4 style="margin-top: 20px; color: #888;">Henüz blog yazısı bulunmuyor</h4>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    
+                                    <!-- Pagination -->
+                                    {% include "includes/pagination.html" %}
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<!-- End: Blog Section -->
+
+<style>
+.blog-item:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2) !important;
+}
+
+.entry-title a:hover {
+    color: #667eea !important;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+}
+
+.page-numbers:hover {
+    opacity: 0.8;
+}
+</style>
+
+{% endblock content %}

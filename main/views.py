@@ -3,12 +3,13 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.core.paginator import Paginator
+from django.db import models
 
 from users.models import SubscribedUsers
 from django.contrib import messages
 from django.core.mail import EmailMessage
 
-from .models import Article, ArticleSeries
+from .models import Article, ArticleSeries, Book, BookCategory
 from .decorators import user_is_superuser
 from .forms import NewsletterForm, SeriesCreateForm, ArticleCreateForm, SeriesUpdateForm, ArticleUpdateForm#, NewsletterForm
 from users.models import SubscribedUsers
@@ -18,14 +19,22 @@ from uuid import uuid4
 
 # Create your views here.
 def homepage(request):
-    matching_series = ArticleSeries.objects.all()
+    # Son blog yazıları için pagination
+    all_series = ArticleSeries.objects.all().order_by('-published')
+    
+    # Pagination - 6 seri per sayfa
+    paginator = Paginator(all_series, 6)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     
     return render(
         request=request,
-        template_name='homebase.html',
+        template_name='homepage.html',
         context={
-            "objects": matching_series,
-            "type": "series"
+            "objects": page_obj,
+            "page_obj": page_obj,
+            "type": "series",
+            "show_slider": True
             }
         )
 
@@ -286,3 +295,71 @@ def newsletter(request):
     form = NewsletterForm()
     form.fields['receivers'].initial = ','.join([active.email for active in SubscribedUsers.objects.all()])
     return render(request=request, template_name='main/newsletter.html', context={'form': form})
+
+# Book Views
+def book_list(request):
+    """Tüm kitapları listeler"""
+    books = Book.objects.filter(status='published').order_by('-created_at')
+    categories = BookCategory.objects.filter(is_active=True).order_by('order', 'name')
+    
+    # Kategori filtresi
+    category_slug = request.GET.get('category')
+    if category_slug:
+        books = books.filter(category__slug=category_slug)
+        current_category = BookCategory.objects.filter(slug=category_slug).first()
+    else:
+        current_category = None
+    
+    # Arama filtresi
+    search_query = request.GET.get('q')
+    if search_query:
+        books = books.filter(
+            models.Q(title__icontains=search_query) |
+            models.Q(description__icontains=search_query) |
+            models.Q(author__username__icontains=search_query) |
+            models.Q(author__first_name__icontains=search_query) |
+            models.Q(author__last_name__icontains=search_query)
+        )
+    
+    # Pagination - 12 kitap per sayfa
+    paginator = Paginator(books, 12)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(
+        request=request,
+        template_name='main/book_list.html',
+        context={
+            "books": page_obj,
+            "page_obj": page_obj,
+            "categories": categories,
+            "current_category": current_category,
+            "search_query": search_query
+        }
+    )
+
+def book_detail(request, slug):
+    """Kitap detay sayfası"""
+    book = Book.objects.filter(slug=slug, status='published').select_related('author', 'category').first()
+    if not book:
+        messages.error(request, "Kitap bulunamadı veya henüz yayınlanmadı.")
+        return redirect('book_list')
+    
+    # Görüntülenme sayısını artır
+    book.view_count += 1
+    book.save(update_fields=['view_count'])
+    
+    # İlgili kitaplar (aynı kategoriden)
+    related_books = Book.objects.filter(
+        category=book.category,
+        status='published'
+    ).exclude(id=book.id)[:6]
+    
+    return render(
+        request=request,
+        template_name='main/book_detail.html',
+        context={
+            "book": book,
+            "related_books": related_books
+        }
+    )

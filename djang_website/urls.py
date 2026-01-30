@@ -18,6 +18,14 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
+# Customize admin site
+admin.site.site_header = 'Librovaai Yönetim Paneli'
+admin.site.site_title = 'Librovaai Admin'
+admin.site.index_title = 'Hoş Geldiniz'
+
+# Import custom admin index view
+from .admin import custom_index
+
 urlpatterns = [
     path("", include('users.urls')),
     path("", include('main.urls')),
