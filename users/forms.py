@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, SetPasswordForm, PasswordResetForm
 from django.contrib.auth import get_user_model
+from tinymce.widgets import TinyMCE
 #from captcha.fields import ReCaptchaField
 #from captcha.widgets import ReCaptchaV2Checkbox
 
@@ -71,6 +72,11 @@ class UserLoginForm(AuthenticationForm):
 
 class UserUpdateForm(forms.ModelForm):
     email = forms.EmailField()
+    description = forms.CharField(
+        widget=TinyMCE(attrs={'cols': 80, 'rows': 30}),
+        required=False,
+        label='Hakkımda'
+    )
 
     class Meta:
         model = get_user_model()

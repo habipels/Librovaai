@@ -1,19 +1,45 @@
-{% extends "base.html" %}
+{% extends "homebase.html" %}
 {% load crispy_forms_tags %}
 {% load static %}
 
 {% block slider %}{% endblock slider %}
 
 {% block content %}
-<section style="padding: 80px 0; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
+<!-- Start: Page Banner -->
+<section class="page-banner services-banner" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 80px 0;">
+    <div class="container">
+        <div class="banner-header text-center" style="">
+            <h2 style="font-weight: 700; font-size: 48px; margin-bottom: 20px;">
+                {% if current_series %}{{ current_series.title }}{% else %}PROFİL{% endif %}
+            </h2>
+            <span class="underline center" style="background: white;"></span>
+            <p class="lead" style="font-size: 20px; margin-top: 20px;">
+                {% if current_series %}
+                    {{ current_series.subtitle }}
+                {% else %}
+                    PROFİLİ DÜZENLE
+                {% endif %}
+            </p>
+        </div>
+        <div class="breadcrumb" style="margin-top: 30px;">
+            <ul style="justify-content: center; display: flex; list-style: none; padding: 0;">
+                <li style="color: white;"><a href="{% url 'homepage' %}" >Ana Sayfa</a></li>
+                <li style="color: white; margin: 0 10px;">/</li>
+                <li >PROFİL</li>
+            </ul>
+        </div>
+    </div>
+</section>
+<!-- End: Page Banner -->
+<section style="padding: 80px 0; ">
     <div class="container">
         <div class="row">
             <!-- Profile Info Card -->
             <div class="col-lg-4 col-md-5">
-                <div class="card shadow-lg border-0" style="border-radius: 20px; overflow: hidden;">
-                    <div class="card-body text-center p-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <div class="card shadow-lg border-0" style="padding: 20px; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);border-radius: 20px; overflow: hidden;">
+                    <div class="card-body text-center p-4" style="background: linear-gradient(135deg, #fe6e01 0%, #007d8d 100%); color: white;">
                         {% if user.username == form.instance.username %}
-                            <input id="id_image" type="file" name="image" hidden/>
+                           
                             <label for="id_image" style="cursor: pointer;">
                                 <img class="rounded-circle" 
                                      style="width: 150px; height: 150px; border: 5px solid white; object-fit: cover; box-shadow: 0 10px 30px rgba(0,0,0,0.3);"
@@ -54,8 +80,8 @@
                     
                     <div class="card-body p-4">
                         <div class="mb-3">
-                            <h6 class="text-muted mb-2" style="font-weight: 600;"><i class="fa fa-envelope text-primary"></i> Email</h6>
-                            <p class="mb-0">{{ form.instance.email }}</p>
+                            <h6 style="color:#007d8d;" class="text-muted mb-2" style="font-weight: 600;"><i class="fa fa-envelope text-primary"></i> Email</h6>
+                            <p style="color:#fe6d01;" class="mb-0">{{ form.instance.email }}</p>
                         </div>
                         
                         {% if form.instance.description %}
@@ -104,7 +130,7 @@
                         {% if user.username == form.instance.username %}
                         <hr>
                         <div class="text-center">
-                            <a href="{% url 'password_change' %}" class="btn btn-outline-secondary btn-sm" style="border-radius: 20px; width: 100%;">
+                            <a href="{% url 'password_change' %}" style="background: #e74c3c; color: white; border-radius: 20px; width: 100%;" class="btn btn-outline-secondary btn-sm">
                                 <i class="fa fa-key"></i> Şifre Değiştir
                             </a>
                         </div>
@@ -117,18 +143,21 @@
             <div class="col-lg-8 col-md-7">
                 {% if user.username == form.instance.username %}
                 <!-- Edit Profile Form -->
-                <div class="card shadow-lg border-0 mb-4" style="border-radius: 20px;">
+                <div class="card shadow-lg border-0 mb-4" style="padding: 20px; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);border-radius: 20px;">
                     <div class="card-header" style="background: white; border-bottom: 3px solid #667eea; border-radius: 20px 20px 0 0;">
                         <h4 class="mb-0" style="color: #667eea; font-weight: 600;"><i class="fa fa-edit"></i> Profil Düzenle</h4>
                     </div>
                     <div class="card-body p-4">
-                        <form method="POST" enctype="multipart/form-data">
+                        <form method="POST" enctype="multipart/form-data" id="profileForm">
                             {% csrf_token %}
                             
                             {% if messages %}
                                 {% for message in messages %}
-                                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" style="border-radius: 15px;">
-                                        {{ message }}
+                                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show modern-alert">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fa fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %} mr-3" style="font-size: 24px;"></i>
+                                            <div class="flex-grow-1">{{ message }}</div>
+                                        </div>
                                         <button type="button" class="close" data-dismiss="alert">
                                             <span>&times;</span>
                                         </button>
@@ -136,43 +165,131 @@
                                 {% endfor %}
                             {% endif %}
                             
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label style="font-weight: 600; color: #555;"><i class="fa fa-user"></i> Ad</label>
-                                        {{ form.first_name }}
+                            <!-- Kişisel Bilgiler -->
+                            <div class="form-section">
+                                <div class="section-header">
+                                    <i class="fa fa-user-circle"></i>
+                                    <h5>Kişisel Bilgiler</h5>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="modern-form-group">
+                                            <div class="input-icon-wrapper">
+                                                <i class="fa fa-user input-icon"></i>
+                                                {{ form.first_name }}
+                                                <label for="id_first_name" class="floating-label">Ad</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="modern-form-group">
+                                            <div class="input-icon-wrapper">
+                                                <i class="fa fa-user input-icon"></i>
+                                                {{ form.last_name }}
+                                                <label for="id_last_name" class="floating-label">Soyad</label>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label style="font-weight: 600; color: #555;"><i class="fa fa-user"></i> Soyad</label>
-                                        {{ form.last_name }}
+                                
+                                <div class="modern-form-group">
+                                    <div class="input-icon-wrapper">
+                                        <i class="fa fa-envelope input-icon"></i>
+                                        {{ form.email }}
+                                        <label for="id_email" class="floating-label">Email Adresi</label>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="form-group">
-                                <label style="font-weight: 600; color: #555;"><i class="fa fa-envelope"></i> Email</label>
-                                {{ form.email }}
+                            <!-- Hakkımda -->
+                            <div class="form-section editor-section">
+                                <div class="section-header">
+                                    <i class="fa fa-file-alt"></i>
+                                    <h5>Hakkımda</h5>
+                                    <span class="editor-badge"><i class="fa fa-magic"></i> Zengin Metin Editörü</span>
+                                </div>
+                                
+                                <div class="word-like-editor-wrapper">
+                                    <div class="editor-toolbar-custom">
+                                        <div class="toolbar-info">
+                                            <i class="fa fa-info-circle"></i>
+                                            <span>Profesyonel bir profil oluşturmak için aşağıdaki editörü kullanın</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="modern-form-group mb-0">
+                                        {{ form.description }}
+                                    </div>
+                                    
+                                    <div class="editor-footer">
+                                        <div class="editor-stats">
+                                            <i class="fa fa-chart-line"></i>
+                                            <span id="charCount">0</span> karakter
+                                            <span class="mx-2">|</span>
+                                            <span id="wordCount">0</span> kelime
+                                        </div>
+                                        <small class="text-muted">
+                                            <i class="fa fa-lightbulb"></i> İpucu: Uzmanınızdan, deneyimlerinizden ve hedeflerinizden bahsedin
+                                        </small>
+                                    </div>
+                                </div>
                             </div>
                             
-                            <div class="form-group">
-                                <label style="font-weight: 600; color: #555;"><i class="fa fa-align-left"></i> Hakkımda</label>
-                                {{ form.description }}
+                            <!-- Profil Resmi -->
+                            <div class="form-section">
+                                <div class="section-header">
+                                    <i class="fa fa-image"></i>
+                                    <h5>Profil Resmi</h5>
+                                </div>
+                                
+                                <div class="file-upload-wrapper">
+                                    <div class="file-upload-preview" id="imagePreview">
+                                        {% if form.instance.image %}
+                                            <img src="{{ form.instance.image.url }}" alt="Mevcut Resim">
+                                            <div class="preview-overlay">
+                                                <i class="fa fa-camera"></i>
+                                                <p>Yeni resim seç</p>
+                                            </div>
+                                        {% else %}
+                                            <div class="preview-placeholder">
+                                                <i class="fa fa-user-circle"></i>
+                                                <p>Resim seçiniz</p>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="file-upload-input-wrapper">
+                                        {{ form.image }}
+                                        <label for="id_image" class="file-upload-label">
+                                            <i class="fa fa-cloud-upload-alt"></i>
+                                            <span id="fileName">Dosya seç veya sürükle</span>
+                                        </label>
+                                    </div>
+                                    
+                                    <small class="form-text text-muted mt-2">
+                                        <i class="fa fa-info-circle"></i> Maksimum dosya boyutu: 5MB | Desteklenen formatlar: JPG, PNG, GIF
+                                    </small>
+                                </div>
                             </div>
                             
-                            <div class="form-group">
-                                <label style="font-weight: 600; color: #555;"><i class="fa fa-image"></i> Profil Resmi</label>
-                                {{ form.image }}
-                                <small class="form-text text-muted">Maksimum dosya boyutu: 5MB</small>
-                            </div>
-                            
-                            <hr>
-                            
-                            <div class="text-right">
-                                <button type="submit" class="btn btn-lg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 12px 40px; color: white; border-radius: 25px; font-weight: 600; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
-                                    <i class="fa fa-save"></i> Değişiklikleri Kaydet
-                                </button>
+                            <!-- Form Actions -->
+                            <div class="form-actions">
+                                <div class="row align-items-center">
+                                    <div class="col-md-6">
+                                        <small class="text-muted">
+                                            <i class="fa fa-shield-alt"></i> Bilgileriniz güvenli bir şekilde saklanmaktadır.
+                                        </small>
+                                    </div>
+                                    <div class="col-md-6 text-right">
+                                        <button type="button" class="btn btn-outline-secondary btn-cancel mr-2" onclick="window.location.reload();">
+                                            <i class="fa fa-times"></i> İptal
+                                        </button>
+                                        <button type="submit" class="btn btn-primary btn-save">
+                                            <i class="fa fa-save"></i> Değişiklikleri Kaydet
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -282,6 +399,310 @@
 </section>
 
 <style>
+/* Modern Form Sections */
+.form-section {
+    margin-bottom: 40px;
+    padding: 25px;
+    background: #f8f9fa;
+    border-radius: 15px;
+    border-left: 4px solid #667eea;
+    transition: all 0.3s;
+}
+
+.form-section:hover {
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
+    transform: translateX(5px);
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e0e0e0;
+    position: relative;
+}
+
+.section-header i {
+    font-size: 24px;
+    color: #667eea;
+    margin-right: 12px;
+}
+
+.section-header h5 {
+    margin: 0;
+    font-weight: 700;
+    color: #333;
+    font-size: 18px;
+    flex-grow: 1;
+}
+
+.editor-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.editor-badge i {
+    color: white;
+    font-size: 12px;
+    margin: 0;
+}
+
+/* Modern Form Groups with Floating Labels */
+.modern-form-group {
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.input-icon-wrapper {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #667eea;
+    font-size: 16px;
+    z-index: 2;
+    transition: all 0.3s;
+}
+
+.modern-form-group input[type="text"],
+.modern-form-group input[type="email"],
+.modern-form-group textarea {
+    width: 100%;
+    padding: 15px 15px 15px 45px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 15px;
+    transition: all 0.3s;
+    background: white;
+}
+
+.modern-form-group input:focus,
+.modern-form-group textarea:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    outline: none;
+}
+
+.modern-form-group input:focus ~ .input-icon {
+    color: #764ba2;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.floating-label {
+    position: absolute;
+    left: 45px;
+    top: 15px;
+    color: #999;
+    font-size: 15px;
+    transition: all 0.3s;
+    pointer-events: none;
+    background: white;
+    padding: 0 5px;
+}
+
+.modern-form-group input:focus ~ .floating-label,
+.modern-form-group input:not(:placeholder-shown) ~ .floating-label {
+    top: -10px;
+    left: 40px;
+    font-size: 12px;
+    color: #667eea;
+    font-weight: 600;
+}
+
+/* Modern Alerts */
+.modern-alert {
+    border-radius: 15px;
+    border: none;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    color: white;
+}
+
+.alert-error,
+.alert-danger {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    color: white;
+}
+
+.modern-alert .close {
+    color: white;
+    opacity: 0.8;
+    text-shadow: none;
+}
+
+/* Word-Like Editor Styling */
+.editor-section {
+    background: white !important;
+    border-left: 4px solid #2185d0 !important;
+}
+
+.word-like-editor-wrapper {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.editor-toolbar-custom {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 15px 20px;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.toolbar-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #495057;
+    font-size: 14px;
+}
+
+.toolbar-info i {
+    color: #2185d0;
+    font-size: 16px;
+}
+
+/* Summernote Custom Styling - Word-like */
+.word-like-editor .note-toolbar {
+    background: white;
+    border-bottom: 2px solid #e0e0e0;
+    padding: 10px 15px;
+}
+
+.word-like-editor .note-btn-group {
+    margin-right: 10px;
+}
+
+.word-like-editor .note-btn {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin: 2px;
+    transition: all 0.2s;
+}
+
+.word-like-editor .note-btn:hover {
+    background: #f8f9fa;
+    border-color: #667eea;
+    transform: translateY(-1px);
+}
+
+.word-like-editor .note-btn.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: #667eea;
+}
+
+.word-like-editor .note-editable {
+    background: white;
+    padding: 30px;
+    min-height: 400px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 15px;
+    line-height: 1.8;
+    color: #333;
+}
+
+.word-like-editor .note-editable:focus {
+    background: #fefefe;
+}
+
+.word-like-editor .note-statusbar {
+    background: #f8f9fa;
+    border-top: 2px solid #e0e0e0;
+    display: none; /* Hide default status bar */
+}
+
+.editor-footer {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 15px 20px;
+    border-top: 2px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.editor-stats {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: #495057;
+    font-size: 14px;
+}
+
+.editor-stats i {
+    color: #667eea;
+}
+
+.editor-stats span {
+    transition: color 0.3s;
+}
+
+/* Form Actions */
+.form-actions {
+    margin-top: 40px;
+    padding: 25px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+}
+
+.btn-save {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    padding: 12px 35px;
+    color: white;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 16px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    transition: all 0.3s;
+}
+
+.btn-save:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.btn-cancel {
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s;
+}
+
+.btn-cancel:hover {
+    transform: translateY(-2px);
+    background: #6c757d;
+    color: white;
+}
+
+/* Basic Form Styles */
 .form-control {
     border-radius: 12px;
     padding: 12px 20px;
@@ -306,5 +727,345 @@
     transform: translateY(-2px);
     box-shadow: 0 5px 20px rgba(0,0,0,0.2);
 }
+
+/* Modern File Upload Styling */
+.file-upload-wrapper {
+    margin-top: 15px;
+}
+
+.file-upload-preview {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 20px;
+    border-radius: 15px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.file-upload-preview:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.3);
+}
+
+.file-upload-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.preview-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(102, 126, 234, 0.9);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.file-upload-preview:hover .preview-overlay {
+    opacity: 1;
+}
+
+.preview-overlay i {
+    font-size: 48px;
+    margin-bottom: 10px;
+}
+
+.preview-overlay p {
+    margin: 0;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.preview-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #999;
+}
+
+.preview-placeholder i {
+    font-size: 64px;
+    margin-bottom: 15px;
+}
+
+.preview-placeholder p {
+    margin: 0;
+    font-weight: 500;
+}
+
+.file-upload-input-wrapper {
+    position: relative;
+    text-align: center;
+}
+
+.file-upload-input-wrapper input[type="file"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.file-upload-label {
+    display: inline-block;
+    padding: 15px 40px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    transition: all 0.3s;
+    border: none;
+}
+
+.file-upload-label:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+}
+
+.file-upload-label i {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+.file-upload-label span {
+    font-size: 15px;
+}
+
+/* Drag and drop effect */
+.file-upload-wrapper.drag-over .file-upload-preview {
+    border: 3px dashed #667eea;
+    background: rgba(102, 126, 234, 0.1);
+}
+
+@media (max-width: 768px) {
+    .file-upload-preview {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .file-upload-label {
+        padding: 12px 30px;
+        font-size: 14px;
+    }
+}
 </style>
 {% endblock content %}
+
+{% block extra_js %}
+<!-- Summernote CSS/JS -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    // Word-like Summernote initialization
+    $('#id_description').summernote({
+        height: 400,
+        minHeight: 300,
+        maxHeight: 600,
+        placeholder: 'Profesyonel profilinizi oluşturun... \n\nÖrnek:\n• Uzmanlık alanlarınız\n• Deneyimleriniz ve başarılarınız\n• İlgi alanlarınız\n• Hedefleriniz',
+        fontNames: ['Arial', 'Arial Black', 'Calibri', 'Comic Sans MS', 'Courier New', 'Georgia', 'Helvetica', 'Impact', 'Tahoma', 'Times New Roman', 'Verdana'],
+        fontNamesIgnoreCheck: ['Arial', 'Calibri'],
+        toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+            ['fontname', ['fontname']],
+            ['fontsize', ['fontsize']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['height', ['height']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture', 'hr']],
+            ['view', ['fullscreen', 'codeview', 'undo', 'redo']]
+        ],
+        styleTags: [
+            'p',
+            { title: 'Başlık 1', tag: 'h1', className: '', value: 'h1' },
+            { title: 'Başlık 2', tag: 'h2', className: '', value: 'h2' },
+            { title: 'Başlık 3', tag: 'h3', className: '', value: 'h3' },
+            { title: 'Başlık 4', tag: 'h4', className: '', value: 'h4' },
+            { title: 'Alıntı', tag: 'blockquote', className: '', value: 'blockquote' },
+            { title: 'Kod', tag: 'pre', className: '', value: 'pre' }
+        ],
+        callbacks: {
+            onChange: function(contents, $editable) {
+                updateEditorStats(contents);
+            },
+            onInit: function() {
+                // Initialize stats
+                const initialContent = $('#id_description').val() || '';
+                updateEditorStats(initialContent);
+                
+                // Custom styling for note-editor
+                $('.note-editor').addClass('word-like-editor');
+            }
+        }
+    });
+    
+    // Update character and word count
+    function updateEditorStats(contents) {
+        // Remove HTML tags for counting
+        const text = contents.replace(/<[^>]*>/g, '').trim();
+        const charCount = text.length;
+        const wordCount = text ? text.split(/\s+/).filter(word => word.length > 0).length : 0;
+        
+        $('#charCount').text(charCount);
+        $('#wordCount').text(wordCount);
+        
+        // Color coding based on length
+        if (charCount < 100) {
+            $('#charCount').css('color', '#e74c3c');
+        } else if (charCount < 300) {
+            $('#charCount').css('color', '#f39c12');
+        } else {
+            $('#charCount').css('color', '#27ae60');
+        }
+    }
+    
+    // File upload preview and interactions
+    const fileInput = document.getElementById('id_image');
+    const imagePreview = document.getElementById('imagePreview');
+    const fileName = document.getElementById('fileName');
+    const fileWrapper = document.querySelector('.file-upload-wrapper');
+    
+    // File input change event
+    if (fileInput) {
+        fileInput.addEventListener('change', function(e) {
+            handleFileSelect(e.target.files[0]);
+        });
+        
+        // Click preview to trigger file input
+        if (imagePreview) {
+            imagePreview.addEventListener('click', function() {
+                fileInput.click();
+            });
+        }
+        
+        // Drag and drop functionality
+        if (fileWrapper) {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                fileWrapper.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                fileWrapper.addEventListener(eventName, function() {
+                    fileWrapper.classList.add('drag-over');
+                }, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                fileWrapper.addEventListener(eventName, function() {
+                    fileWrapper.classList.remove('drag-over');
+                }, false);
+            });
+            
+            fileWrapper.addEventListener('drop', function(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    handleFileSelect(files[0]);
+                }
+            }, false);
+        }
+    }
+    
+    function handleFileSelect(file) {
+        if (!file) return;
+        
+        // Update file name display
+        if (fileName) {
+            fileName.textContent = file.name;
+        }
+        
+        // Check if file is an image
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                // Update preview
+                imagePreview.innerHTML = `
+                    <img src="${e.target.result}" alt="Önizleme">
+                    <div class="preview-overlay">
+                        <i class="fa fa-camera"></i>
+                        <p>Yeni resim seç</p>
+                    </div>
+                `;
+            };
+            
+            reader.readAsDataURL(file);
+        } else {
+            alert('Lütfen geçerli bir resim dosyası seçiniz (JPG, PNG, GIF)');
+            fileInput.value = '';
+        }
+    }
+    
+    // Floating label animations for form inputs
+    const formInputs = document.querySelectorAll('.modern-form-group input[type="text"], .modern-form-group input[type="email"]');
+    
+    formInputs.forEach(input => {
+        // Check on page load if input has value
+        if (input.value) {
+            input.setAttribute('placeholder', ' ');
+        }
+        
+        // Add placeholder attribute for CSS to work
+        if (!input.hasAttribute('placeholder')) {
+            input.setAttribute('placeholder', ' ');
+        }
+        
+        // Add focus effect
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('focused');
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.classList.remove('focused');
+        });
+    });
+    
+    // Form validation feedback
+    const profileForm = document.getElementById('profileForm');
+    if (profileForm) {
+        profileForm.addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('.btn-save');
+            if (submitBtn) {
+                submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Kaydediliyor...';
+                submitBtn.disabled = true;
+            }
+        });
+    }
+    
+    // Auto-dismiss alerts after 5 seconds
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.modern-alert');
+        alerts.forEach(alert => {
+            $(alert).fadeOut(500, function() {
+                $(this).remove();
+            });
+        });
+    }, 5000);
+});
+</script>
+{% endblock extra_js %}
