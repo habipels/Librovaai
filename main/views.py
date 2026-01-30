@@ -21,7 +21,7 @@ def homepage(request):
     
     return render(
         request=request,
-        template_name='main/home.html',
+        template_name='homebase.html',
         context={
             "objects": matching_series,
             "type": "series"
