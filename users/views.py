@@ -12,6 +12,7 @@ from django.core.mail import EmailMessage
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.db.models.query_utils import Q
+from django.db import models
 
 from .forms import UserRegistrationForm, UserLoginForm, UserUpdateForm, SetPasswordForm, PasswordResetForm
 from .decorators import user_not_authenticated
@@ -120,7 +121,7 @@ def profile(request, username):
         form = UserUpdateForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
             user_form = form.save()
-            messages.success(request, f'{user_form.username}, Your profile has been updated!')
+            messages.success(request, f'{user_form.username}, Profiliniz başarıyla güncellendi!')
             return redirect("profile", user_form.username)
 
         for error in list(form.errors.values()):
@@ -129,12 +130,32 @@ def profile(request, username):
     user = get_user_model().objects.filter(username=username).first()
     if user:
         form = UserUpdateForm(instance=user)
-        form.fields['description'].widget.attrs = {'rows': 1}
+        form.fields['description'].widget.attrs = {'rows': 4}
+        
+        # Kullanıcıya ait kitapları al
+        from main.models import Book
+        user_books = Book.objects.filter(author=user, status__in=['published', 'approved']).select_related('category')[:6]
+        
+        # İstatistikleri hesapla
+        total_books = Book.objects.filter(author=user, status='published').count()
+        total_views = Book.objects.filter(author=user, status='published').aggregate(
+            total=models.Sum('view_count')
+        )['total'] or 0
+        total_downloads = Book.objects.filter(author=user, status='published').aggregate(
+            total=models.Sum('download_count')
+        )['total'] or 0
+        
         return render(
             request=request,
             template_name="users/profile.html",
-            context={"form": form}
-            )
+            context={
+                "form": form,
+                "user_books": user_books,
+                "total_books": total_books,
+                "total_views": total_views,
+                "total_downloads": total_downloads,
+            }
+        )
     
     return redirect("homepage")
 

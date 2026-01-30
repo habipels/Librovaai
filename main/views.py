@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
+from django.core.paginator import Paginator
 
 from users.models import SubscribedUsers
 from django.contrib import messages
@@ -27,6 +28,68 @@ def homepage(request):
             "type": "series"
             }
         )
+
+# Blog Views
+def blog_list(request):
+    """Tüm blog yazılarını listeler"""
+    articles = Article.objects.all().order_by('-published')
+    series_list = ArticleSeries.objects.all().order_by('-published')
+    
+    # Pagination
+    paginator = Paginator(articles, 9)  # 9 makale per sayfa
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(
+        request=request,
+        template_name='main/blog.html',
+        context={
+            "articles": page_obj,
+            "series_list": series_list,
+            "page_obj": page_obj
+        }
+    )
+
+def blog_series(request, series_slug):
+    """Belirli bir serinin tüm yazılarını listeler"""
+    series = ArticleSeries.objects.filter(slug=series_slug).first()
+    if not series:
+        return redirect('blog_list')
+    
+    articles = Article.objects.filter(series=series).order_by('-published')
+    
+    # Pagination
+    paginator = Paginator(articles, 9)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(
+        request=request,
+        template_name='main/blog.html',
+        context={
+            "articles": page_obj,
+            "current_series": series,
+            "page_obj": page_obj
+        }
+    )
+
+def blog_detail(request, series_slug, article_slug):
+    """Blog yazısı detay sayfası"""
+    article = Article.objects.filter(series__slug=series_slug, article_slug=article_slug).first()
+    if not article:
+        return redirect('blog_list')
+    
+    # İlgili yazılar (aynı seriden)
+    related_articles = Article.objects.filter(series=article.series).exclude(id=article.id)[:3]
+    
+    return render(
+        request=request,
+        template_name='main/blog_detail.html',
+        context={
+            "article": article,
+            "related_articles": related_articles
+        }
+    )
 
 def series(request, series: str):
     matching_series = Article.objects.filter(series__slug=series).all()
