@@ -1,24 +1,167 @@
-{% extends "main/header.html" %}
+{% extends "homebase.html" %}
 {% load crispy_forms_tags %}
+{% load static %}
+
 {% block content %}
-    <div class="content-section">
-        <form method="POST">
-            {% csrf_token %}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Join Today</legend>
-                {{ form|crispy }}
-            </fieldset>
+<section class="signin-page" style="padding: 80px 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="card shadow-lg border-0" style="border-radius: 15px;">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            {% if site_settings.logo %}
+                                <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.site_name }}" style="max-height: 60px; margin-bottom: 20px;">
+                            {% endif %}
+                            <h2 class="font-weight-bold" style="color: #333;">Hesap Oluştur</h2>
+                            <p class="text-muted">Dijital kütüphaneye katılın</p>
+                        </div>
 
-            By registering, you accept the Terms of Service and Privacy Notice
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="close" data-dismiss="alert">
+                                        <span>&times;</span>
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
 
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Sign Up</button>
+                        <form method="POST" id="registerForm">
+                            {% csrf_token %}
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Ad *</label>
+                                        {{ form.first_name }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Soyad *</label>
+                                        {{ form.last_name }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Kullanıcı Adı *</label>
+                                {{ form.username }}
+                                <small class="form-text text-muted">{{ form.username.help_text }}</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Email *</label>
+                                {{ form.email }}
+                                <small class="form-text text-muted">{{ form.email.help_text }}</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Hesap Türü *</label>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="custom-control custom-radio" style="padding: 15px; border: 2px solid #e0e0e0; border-radius: 10px; cursor: pointer;" onclick="document.getElementById('id_user_role_0').click();">
+                                            <input type="radio" id="id_user_role_0" name="user_role" value="reader" class="custom-control-input" {% if not form.user_role.value or form.user_role.value == 'reader' %}checked{% endif %}>
+                                            <label class="custom-control-label" for="id_user_role_0" style="cursor: pointer;">
+                                                <i class="fa fa-book" style="font-size: 24px; color: #667eea;"></i><br>
+                                                <strong>Okuyucu</strong><br>
+                                                <small class="text-muted">Kitap oku ve keşfet</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="custom-control custom-radio" style="padding: 15px; border: 2px solid #e0e0e0; border-radius: 10px; cursor: pointer;" onclick="document.getElementById('id_user_role_1').click(); showAuthorFields();">
+                                            <input type="radio" id="id_user_role_1" name="user_role" value="author" class="custom-control-input" {% if form.user_role.value == 'author' %}checked{% endif %}>
+                                            <label class="custom-control-label" for="id_user_role_1" style="cursor: pointer;">
+                                                <i class="fa fa-pen-fancy" style="font-size: 24px; color: #764ba2;"></i><br>
+                                                <strong>Yazar</strong><br>
+                                                <small class="text-muted">Kitap yayınla</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <small class="form-text text-muted">{{ form.user_role.help_text }}</small>
+                            </div>
+
+                            <div class="form-group" id="authorTitleField" style="display: {% if form.user_role.value == 'author' %}block{% else %}none{% endif %};">
+                                <label>Ünvan (Yazar için)</label>
+                                {{ form.author_title }}
+                            </div>
+
+                            <div class="form-group">
+                                <label>Şifre *</label>
+                                {{ form.password1 }}
+                                <small class="form-text text-muted">{{ form.password1.help_text }}</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Şifre Tekrar *</label>
+                                {{ form.password2 }}
+                            </div>
+
+                            <div class="form-group form-check">
+                                <input type="checkbox" class="form-check-input" id="termsCheck" required>
+                                <label class="form-check-label" for="termsCheck">
+                                    <small>Kullanım Koşulları ve Gizlilik Politikası'nı kabul ediyorum</small>
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block btn-lg" style="border-radius: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                                <i class="fa fa-user-plus"></i> Hesap Oluştur
+                            </button>
+                        </form>
+
+                        <div class="text-center mt-4">
+                            <p class="text-muted mb-0">
+                                Zaten hesabınız var mı? 
+                                <a href="{% url 'login' %}" style="color: #667eea; font-weight: bold;">Giriş Yapın</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </form>
-        <div class="border-top pt-3">
-            <small class="text-muted">
-                Already Have An Account? <a class="ml-2" href="/login">Sign In</a>
-            </small>
         </div>
     </div>
+</section>
+
+<script>
+function showAuthorFields() {
+    document.getElementById('authorTitleField').style.display = 'block';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const readerRadio = document.getElementById('id_user_role_0');
+    const authorRadio = document.getElementById('id_user_role_1');
+    const authorTitleField = document.getElementById('authorTitleField');
+
+    function toggleAuthorFields() {
+        if (authorRadio.checked) {
+            authorTitleField.style.display = 'block';
+        } else {
+            authorTitleField.style.display = 'none';
+        }
+    }
+
+    readerRadio.addEventListener('change', toggleAuthorFields);
+    authorRadio.addEventListener('change', toggleAuthorFields);
+});
+</script>
+
+<style>
+.form-control {
+    border-radius: 10px;
+    padding: 12px 20px;
+    border: 1px solid #e0e0e0;
+}
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+.custom-radio:hover {
+    border-color: #667eea !important;
+    background-color: #f8f9ff;
+}
+</style>
 {% endblock content %}

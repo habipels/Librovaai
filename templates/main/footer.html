@@ -45,8 +45,17 @@
 
     </div>
     <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
-        <p>© {% now "Y" %} Copyright:
-            <a href="https://PyLessons.com/">PyLessons.com</a>
+        <p>© {% now "Y" %} {% if site_settings.footer_text %}{{ site_settings.footer_text }}{% else %}Copyright{% endif %}:
+            <a href="/">{{ site_settings.site_name }}</a>
         </p>
+        {% if site_settings.facebook_url or site_settings.twitter_url or site_settings.instagram_url or site_settings.linkedin_url or site_settings.youtube_url %}
+        <div class="social-links mt-2">
+            {% if site_settings.facebook_url %}<a href="{{ site_settings.facebook_url }}" target="_blank"><i class="fa fa-facebook"></i></a>{% endif %}
+            {% if site_settings.twitter_url %}<a href="{{ site_settings.twitter_url }}" target="_blank"><i class="fa fa-twitter"></i></a>{% endif %}
+            {% if site_settings.instagram_url %}<a href="{{ site_settings.instagram_url }}" target="_blank"><i class="fa fa-instagram"></i></a>{% endif %}
+            {% if site_settings.linkedin_url %}<a href="{{ site_settings.linkedin_url }}" target="_blank"><i class="fa fa-linkedin"></i></a>{% endif %}
+            {% if site_settings.youtube_url %}<a href="{{ site_settings.youtube_url }}" target="_blank"><i class="fa fa-youtube"></i></a>{% endif %}
+        </div>
+        {% endif %}
     </div>
 </footer>

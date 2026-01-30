@@ -1,59 +1,103 @@
 {% load static %}
+{% if site_settings.enable_banner %}
 <div data-ride="carousel" class="carousel slide" id="home-v1-header-carousel">
             
             <!-- Carousel slides -->
             <div class="carousel-inner">
+                <!-- Banner 1 -->
                 <div class="item active">
                     <figure>
-                        <img alt="Home Slide" src="{% static 'images/header-slider/home-v1/header-slide.jpg' %}" />
+                        {% if site_settings.banner_image_1 %}
+                            <img alt="{{ site_settings.banner_title_1 }}" src="{{ site_settings.banner_image_1.url }}" />
+                        {% else %}
+                            <img alt="Home Slide" src="{% static 'images/header-slider/home-v1/header-slide.jpg' %}" />
+                        {% endif %}
                     </figure>
                     <div class="container">
                         <div class="carousel-caption">
-                            <h3>Online Learning Anytime, Anywhere!</h3>
-                            <h2>Discover Your Roots</h2>
-                            <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humor, or randomized words.</p>
-                            <div class="slide-buttons hidden-sm hidden-xs">    
-                                <a href="#" class="btn btn-primary">Read More</a>
-                                <a href="#" class="btn btn-default">Purchase</a>
-                            </div>
+                            {% if site_settings.banner_title_1 %}
+                                <h3>{{ site_settings.banner_title_1 }}</h3>
+                            {% endif %}
+                            {% if site_settings.banner_subtitle_1 %}
+                                <h2>{{ site_settings.banner_subtitle_1 }}</h2>
+                            {% endif %}
+                            {% if site_settings.banner_description_1 %}
+                                <p>{{ site_settings.banner_description_1 }}</p>
+                            {% endif %}
+                            {% if site_settings.banner_button_text_1 %}
+                                <div class="slide-buttons hidden-sm hidden-xs">    
+                                    <a href="{{ site_settings.banner_button_link_1 }}" class="btn btn-primary">{{ site_settings.banner_button_text_1 }}</a>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
+                
+                <!-- Banner 2 -->
+                {% if site_settings.banner_title_2 or site_settings.banner_image_2 %}
                 <div class="item">
                     <figure>
-                        <img alt="Home Slide" src="{% static 'images/header-slider/home-v1/header-slide.jpg' %}" />
+                        {% if site_settings.banner_image_2 %}
+                            <img alt="{{ site_settings.banner_title_2 }}" src="{{ site_settings.banner_image_2.url }}" />
+                        {% else %}
+                            <img alt="Home Slide" src="{% static 'images/header-slider/home-v1/header-slide.jpg' %}" />
+                        {% endif %}
                     </figure>
                     <div class="container">
                         <div class="carousel-caption">
-                            <h3>Online Learning Anytime, Anywhere!</h3>
-                            <h2>Discover Your Roots</h2>
-                            <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humor, or randomized words.</p>
-                            <div class="slide-buttons hidden-sm hidden-xs">    
-                                <a href="#" class="btn btn-primary">Read More</a>
-                                <a href="#" class="btn btn-default">Purchase</a>
-                            </div>
+                            {% if site_settings.banner_title_2 %}
+                                <h3>{{ site_settings.banner_title_2 }}</h3>
+                            {% endif %}
+                            {% if site_settings.banner_subtitle_2 %}
+                                <h2>{{ site_settings.banner_subtitle_2 }}</h2>
+                            {% endif %}
+                            {% if site_settings.banner_description_2 %}
+                                <p>{{ site_settings.banner_description_2 }}</p>
+                            {% endif %}
+                            {% if site_settings.banner_button_text_2 %}
+                                <div class="slide-buttons hidden-sm hidden-xs">    
+                                    <a href="{{ site_settings.banner_button_link_2 }}" class="btn btn-primary">{{ site_settings.banner_button_text_2 }}</a>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
+                {% endif %}
+                
+                <!-- Banner 3 -->
+                {% if site_settings.banner_title_3 or site_settings.banner_image_3 %}
                 <div class="item">
                     <figure>
-                        <img alt="Home Slide" src="{% static 'images/header-slider/home-v1/header-slide.jpg' %}" />
+                        {% if site_settings.banner_image_3 %}
+                            <img alt="{{ site_settings.banner_title_3 }}" src="{{ site_settings.banner_image_3.url }}" />
+                        {% else %}
+                            <img alt="Home Slide" src="{% static 'images/header-slider/home-v1/header-slide.jpg' %}" />
+                        {% endif %}
                     </figure>
                     <div class="container">
                         <div class="carousel-caption">
-                            <h3>Online Learning Anytime, Anywhere!</h3>
-                            <h2>Discover Your Roots</h2>
-                            <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humor, or randomized words.</p>
-                            <div class="slide-buttons hidden-sm hidden-xs">    
-                                <a href="#" class="btn btn-primary">Read More</a>
-                                <a href="#" class="btn btn-default">Purchase</a>
-                            </div>
+                            {% if site_settings.banner_title_3 %}
+                                <h3>{{ site_settings.banner_title_3 }}</h3>
+                            {% endif %}
+                            {% if site_settings.banner_subtitle_3 %}
+                                <h2>{{ site_settings.banner_subtitle_3 }}</h2>
+                            {% endif %}
+                            {% if site_settings.banner_description_3 %}
+                                <p>{{ site_settings.banner_description_3 }}</p>
+                            {% endif %}
+                            {% if site_settings.banner_button_text_3 %}
+                                <div class="slide-buttons hidden-sm hidden-xs">    
+                                    <a href="{{ site_settings.banner_button_link_3 }}" class="btn btn-primary">{{ site_settings.banner_button_text_3 }}</a>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
+                {% endif %}
             </div>
             
             <!-- Controls -->
             <a class="left carousel-control" href="#home-v1-header-carousel" data-slide="prev"></a>
             <a class="right carousel-control" href="#home-v1-header-carousel" data-slide="next"></a>
         </div>
+{% endif %}
